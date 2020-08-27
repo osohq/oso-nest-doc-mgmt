@@ -5,7 +5,7 @@
 1. Highlight how lightweight the integration is
 1. Demonstrate the power of Polar rule expressions
 
-##_Possible Outline_
+## Possible Outline
 
 1. Setup
     1. Install and run instructions
