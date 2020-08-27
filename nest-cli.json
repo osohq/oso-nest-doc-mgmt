@@ -1,0 +1,8 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "assets": [{"include": "**/*.polar", "exclude": "dist/*", "watchAssets": true}],
+    "watchAssets": true
+  }
+}
