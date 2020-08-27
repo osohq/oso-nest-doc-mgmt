@@ -1,75 +1,44 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# Oso Node.js Demo
 
-[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
-[travis-url]: https://travis-ci.org/nestjs/nest
-[linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
-[linux-url]: https://travis-ci.org/nestjs/nest
-  
-  <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/dm/@nestjs/core.svg" alt="NPM Downloads" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://api.travis-ci.org/nestjs/nest.svg?branch=master" alt="Travis" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://img.shields.io/travis/nestjs/nest/master.svg?label=linux" alt="Linux" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#5" alt="Coverage" /></a>
-<a href="https://gitter.im/nestjs/nestjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge"><img src="https://badges.gitter.im/nestjs/nestjs.svg" alt="Gitter" /></a>
-<a href="https://opencollective.com/nest#backer"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
-  <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Goals
+1. Show how to integrate Oso into a popular JavaScript/TypeScript web framework
+1. Highlight how lightweight the integration is
+1. Demonstrate the power of Polar rule expressions
 
-## Description
+##_Possible Outline_
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-  Nest is [MIT licensed](LICENSE).
+1. Setup
+    1. Install and run instructions
+    1. _(Potentially demonstrate authentication and review authentication code to show what's available out of the box in 
+    Nest via Passport.)_
+1. Show authenticated document view flow
+    1. Browse guest-viewable documents
+    1. Go through login flow, then browse all documents to show no authorization (beyond authenticated or not)
+    1. _Potentially review document controller and service code for context_
+1. Add Oso
+    1. Review oso module code in `src/oso/*`
+    1. Review `root.polar`
+    1. Show code snippets used to add Oso injections, etc. to enable Oso guards and authorization
+1. Add more document view rules
+    1. Add Polar rule(s)  to `policy.polar` to restrict view access of private documents to document owner
+    1. Browse to show private documents are only visible to owner
+1. Add document edit rules
+    1. Add Polar rule(s) to `policy.polar` to restrict update & delete privileges to document owner
+    1. Browse to show new update and delete restrictions
+1. Add document comment rules
+    1. add Polar rule(s) to restrict 'add comment' privileges to members and 'edit comment' privileges to comment owner
+    1. Browse to show new comment privilege restrictions
+1. Add administrator rules
+    1. Add Polar rule(s) to grant update & delete access to administrator for documents and comments
+    1. Browse to show superuser privileges 
+## Notes
+* This is outline is just a proposal. Happy to discuss any mods or other directions.
+* There are pros and cons to using an existing framework and TypeScript. 
+    * Pros:
+        * TypeScript is what all the cool kids are doing
+        * It looks like less of a toy when the demo lives in a "real" web app.
+        * It doubles as an integration guide for that particular framework
+    * Cons:
+        * Not everyone uses TypeScript
+        * The framework code adds noise that makes it a little more difficult to separate what Oso does from what the
+        framework does.  
