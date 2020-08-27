@@ -1,5 +1,5 @@
-/.idea
-/coverage
-/node_modules
+/.idea/
+/coverage/
+/node_modules/
 /yarn-error.log
 /dist/
