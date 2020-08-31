@@ -46,7 +46,7 @@ Briefly describe conversation w/ customer about roles.
 
 1. Consider the requirements that Admins may delete any comment while users may delete only their own comments
 1. These aren't fully expressible as roles, but imagine if there was a pluggable policy engine that let you express 
-authorization policy almost as fluently as english. Luckily, such a thing exists; enter Oso.
+authorization rules almost as fluently as english. Luckily, such a thing exists; enter Oso.
 1. Brief introduction to Polar w/ links to documentation for more info.
 
 ### Add Oso
