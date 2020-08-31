@@ -119,7 +119,7 @@ hat list of permissions to the UI. So the logic stays in one place.
     1. Browse to show superuser privileges 
 
 ## Notes
-From Sam re his conversation with customer that motivated the sample app:
+From Sam re: his conversation with customer that motivated the sample app:
 
 * Why roles aren't enough
     * Admins can delete comments, users can delete their own comments
