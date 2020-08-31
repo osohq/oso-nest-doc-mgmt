@@ -86,8 +86,8 @@ by that organization.
     1. Can get a list of permissions from oso (oso.query_rule("allow", user, Variable("action", resource)). And return 
     that list of permissions to the UI. So the logic stays in one place.
 
-1. Describe customer closing remark: "it makes me just want to write the spec out in plain English because that's basically what the rules\
- are anyway"
+1. Describe customer closing remark: "it makes me just want to write the spec out in plain English because that's 
+basically what the rules are anyway"
 
 ### Outro: 
 Brief recap of what we've accomplished & the benefits of using Oso
