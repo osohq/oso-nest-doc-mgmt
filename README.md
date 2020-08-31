@@ -35,7 +35,7 @@ advertise the existence of office hours
 1. Briefly explain Nest concepts of Modules, Controllers, Services, and Guards w/ links to Nest docs
 1. Show relationships between base, document, users, and auth modules; explain that we'll review the oso module
     later
-1. Browse relevant urls to show 
+1. Browse `http://localhost:3000` to ensure app is working
     
 ### Review authenticated document view flow
 1. Browse guest-viewable documents
