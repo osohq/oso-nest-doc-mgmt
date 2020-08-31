@@ -7,7 +7,7 @@
 1. Provide a glimpse into the culture and mission of Oso
     1. Customer and solutions focus
         1. Office hours
-    1. Thinking hard about the common challenges customers face when implementing authentication
+    1. Thinking hard about the common challenges customers face when implementing authorization
         1. To provide an elegant solution 
         1. That is broadly applicable
         1. Easy to reason about
