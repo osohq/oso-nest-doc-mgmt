@@ -7,7 +7,7 @@
 1. Provide a glimpse into the culture and mission of Oso
     1. Customer and solutions focus
         1. Office hours
-    1. Something about thinking hard about the common challenges customers face when implementing authentication
+    1. Thinking hard about the common challenges customers face when implementing authentication
         1. To provide an elegant solution 
         1. That is broadly applicable
         1. Easy to reason about
@@ -34,7 +34,7 @@ advertise the existence of office hours
 ### Cursory review of demo code
 1. Briefly explain Nest concepts of Modules, Controllers, Services, and Guards w/ links to Nest docs
 1. Show relationships between base, document, users, and auth modules; explain that we'll review the oso module
-    below
+    later
 1. Browse relevant urls to show 
     
 ### Review authenticated document view flow
@@ -42,15 +42,15 @@ advertise the existence of office hours
 1. Go through login flow, then browse all documents to show no authorization (beyond authenticated or not)
 
 ### Why roles aren't enough
-1. Admins can delete comments, users can delete their own comments
+1. Consider the requirements that Admins may delete any comment while users may delete only their own comments
 1. These aren't fully expressible as roles, but imagine if there was a pluggable policy engine that let you express 
-authorization policy almost as fluently as english. Luckily, such a thing exists; enter Oso:
-
-    https://github.com/oletizi/oso-nest-demo/blob/master/src/oso/policy.polar#L43-L49
+authorization policy almost as fluently as english. Luckily, such a thing exists; enter Oso.
+1. Brief introduction to Polar w/ links to documentation for more info.
 
 ### Add Oso
-1. Steps to integrate the oso module & guards into the app. At this point, there should be no policy restrictions
-1. Add policy rules to restrict update and delete authorization to document owners only
+1. Steps to integrate the oso module & guards into the app. At this point, there should be no policy restrictions; those
+will be added in later steps.
+1. Add policy rules to restrict "update" and "delete" authorization to document owners only.
 1. Explain: You don't need to tell it how to work out who can do what.
 
     1. https://github.com/oletizi/oso-nest-demo/blob/da2006515fd8634c31ffb3004870e53b62ac9ff6/src/oso/root.polar#L21
@@ -87,36 +87,22 @@ hat list of permissions to the UI. So the logic stays in one place.
 1. Closing remark: "it makes me just want to write the spec out in plain English because that's basically what the rules\
  are anyway"
 
-### Call to Action
+### Outro: 
+Brief recap of what we've accomplished & the benefits of using Oso
+1. Easy to integrate
+1. Powerful, elegant way to describe authorization rules
+1. Separation of concerns
+1. Flexibility and extensibility
+1. Help from the experts is always available
+
+### Calls to Action
 1. Download and try Oso in your own app
 1. Sign up for office hours
+1. Join the slack channel
 
 ## README Outline
 
-1. Setup
-    1. Install and run instructions
-    1. _(Potentially demonstrate authentication and review authentication code to show what's available out of the box in 
-    Nest via Passport.)_
-1. Show authenticated document view flow
-    1. Browse guest-viewable documents
-    1. Go through login flow, then browse all documents to show no authorization (beyond authenticated or not)
-    1. _Potentially review document controller and service code for context_
-1. Add Oso
-    1. Review oso module code in `src/oso/*`
-    1. Review `root.polar`
-    1. Show code snippets used to add Oso injections, etc. to enable Oso guards and authorization
-1. Add more document view rules
-    1. Add Polar rule(s)  to `policy.polar` to restrict view access of private documents to document owner
-    1. Browse to show private documents are only visible to owner
-1. Add document edit rules
-    1. Add Polar rule(s) to `policy.polar` to restrict update & delete privileges to document owner
-    1. Browse to show new update and delete restrictions
-1. Add document comment rules
-    1. add Polar rule(s) to restrict 'add comment' privileges to members and 'edit comment' privileges to comment owner
-    1. Browse to show new comment privilege restrictions
-1. Add administrator rules
-    1. Add Polar rule(s) to grant update & delete access to administrator for documents and comments
-    1. Browse to show superuser privileges 
+This README document will contain the tutorial from the blog post, minus any editorializing: just dry technical docs.
 
 ## Notes
 From Sam re: his conversation with customer that motivated the sample app:
