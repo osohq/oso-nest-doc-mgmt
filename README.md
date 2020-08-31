@@ -42,6 +42,8 @@ advertise the existence of office hours
 1. Go through login flow, then browse all documents to show no authorization (beyond authenticated or not)
 
 ### Why roles aren't enough
+Briefly describe conversation w/ customer about roles.
+
 1. Consider the requirements that Admins may delete any comment while users may delete only their own comments
 1. These aren't fully expressible as roles, but imagine if there was a pluggable policy engine that let you express 
 authorization policy almost as fluently as english. Luckily, such a thing exists; enter Oso.
@@ -76,7 +78,7 @@ by that organization.
 
     1. https://github.com/oletizi/oso-nest-demo/blob/master/src/oso/root.polar#L40-L52
     1. Easy way to manage permission groupings
-    1. Aha moment: "so if I wanted to have custom roles, I just need to make sure it returns a list of roles and it 
+    1. Describe customer aha moment: "so if I wanted to have custom roles, I just need to make sure it returns a list of roles and it 
     would just work"
 
 1. Flexible/extensible: what if I wanted to, e.g. hide the delete button if the user doesn't have access
@@ -84,7 +86,7 @@ by that organization.
     1. Can get a list of permissions from oso (oso.query_rule("allow", user, Variable("action", resource)). And return t\
 hat list of permissions to the UI. So the logic stays in one place.
 
-1. Closing remark: "it makes me just want to write the spec out in plain English because that's basically what the rules\
+1. Describe customer closing remark: "it makes me just want to write the spec out in plain English because that's basically what the rules\
  are anyway"
 
 ### Outro: 
