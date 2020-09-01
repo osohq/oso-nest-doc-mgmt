@@ -1,7 +1,7 @@
 import { Controller, Param, Get, Req, UseGuards } from '@nestjs/common';
 import { DocumentService } from './document.service';
-import { OsoInstance, OsoGuard, Authorize } from 'src/oso/oso.guard';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { OsoInstance, Authorize } from '../oso/oso.guard';
+import { LocalAuthGuard } from '../auth/local-auth.guard';
 
 @UseGuards(LocalAuthGuard)
 @UseGuards(OsoInstance)

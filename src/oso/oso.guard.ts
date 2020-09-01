@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Oso } from 'oso';
-import { User, Guest, Actor } from 'src/users/users.service';
-import { Document } from 'src/document/document.service';
-import { Base } from 'src/base/base.service';
+import { User, Guest, Actor } from '../users/users.service';
+import { Document } from '../document/document.service';
+import { Base } from '../base/base.service';
 
 export const Action = (action: string) => SetMetadata('action', action[0]);
 export const Resource = (resource: any) => SetMetadata('resource', resource);
