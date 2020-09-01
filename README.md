@@ -107,6 +107,7 @@ Brief recap of what we've accomplished & the benefits of using Oso
 This README document will contain the tutorial from the blog post, minus any editorializing: just dry technical docs.
 
 ## Notes
+<<<<<<< HEAD
 * This is outline is just a proposal. Happy to discuss any mods or other directions.
 * There are pros and cons to using an existing framework and TypeScript. 
     * Pros:
@@ -117,3 +118,40 @@ This README document will contain the tutorial from the blog post, minus any edi
         * Not everyone uses TypeScript
         * The framework code adds noise that makes it a little more difficult to separate what Oso does from what the
         framework does.  
+=======
+From Sam re: his conversation with customer that motivated the sample app:
+
+* Why roles aren't enough
+    * Admins can delete comments, users can delete their own comments
+    * These aren't fully expressible as roles, but they are as policy:
+        
+        https://github.com/oletizi/oso-nest-demo/blob/master/src/oso/policy.polar#L43-L49
+
+* You don't need to tell it how to work out who can do what.
+
+    * https://github.com/oletizi/oso-nest-demo/blob/da2006515fd8634c31ffb3004870e53b62ac9ff6/src/oso/root.polar#L21
+    * Can user do XYZ → user is owner of base + document is in base + document owners can do anything: 
+    
+        https://github.com/oletizi/oso-nest-demo/blob/master/src/oso/policy.polar#L38
+        * oso does all of these deductions so you dont have to write that code
+
+* The model is extensible: later we might want organizations that can be owners of bases:
+    * Same two lines:
+
+          role(user: User, role, base: Base) if
+            role(user, role, base.organization());
+
+* Structure permissions by grouping as concerns
+
+    * https://github.com/oletizi/oso-nest-demo/blob/master/src/oso/root.polar#L40-L52
+    * Easy way to manage permission groupings
+    * Aha moment: "so if I wanted to have custom roles, I just need to make sure it returns a list of roles and it would just work"
+
+* Flexible/extensible: what if I wanted to, e.g. hide the delete button if the user doesn't have access
+
+    * Can get a list of permissions from oso (oso.query_rule("allow", user, Variable("action", resource)). And return that list of permissions to the UI. So the logic stays in one place.
+
+* Closing remark: "it makes me just want to write the spec out in plain English because that's basically what the rules are anyway"
+
+![My Nest Test](https://circleci.com/gh/oletizi/oso-nest-demo.svg?style=svg)
+>>>>>>> 52ffcf7... - added circleci build badge
