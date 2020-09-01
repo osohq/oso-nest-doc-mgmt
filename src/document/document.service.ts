@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Base } from 'src/base/base.service';
+import { Base } from '../base/base.service';
 
 export class Document {
   constructor(public id: number, public baseId, public document: string) { }
