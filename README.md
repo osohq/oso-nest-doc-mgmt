@@ -140,3 +140,5 @@ From Sam re: his conversation with customer that motivated the sample app:
     * Can get a list of permissions from oso (oso.query_rule("allow", user, Variable("action", resource)). And return that list of permissions to the UI. So the logic stays in one place.
 
 * Closing remark: "it makes me just want to write the spec out in plain English because that's basically what the rules are anyway"
+
+![My Nest Test](https://circleci.com/gh/oletizi/oso-nest-demo.svg?style=svg)
