@@ -17,7 +17,7 @@ export class Comment {
 
 @Injectable()
 export class DocumentService {
-  private sequence: number = 0
+  private sequence: number = 100
   private readonly entities: Document[];
   private readonly comments: Comment[];
 
@@ -29,7 +29,7 @@ export class DocumentService {
   }
 
   async create(baseId: number, document: string): Promise<number> {
-    const id = this.sequence++
+    const id = ++this.sequence
     this.entities.push(new Document(this.sequence, baseId, document))
     return id
   }
@@ -47,7 +47,7 @@ export class DocumentService {
   }
 
   async addComment(documentId: number, data: string): Promise<number> {
-    const id = this.sequence++
+    const id = ++this.sequence
     this.comments.push(new Comment(id, documentId, data))
     return id
   }
