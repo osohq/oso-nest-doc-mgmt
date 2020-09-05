@@ -1,19 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Base } from '../base/base.service';
-
-export class Document {
-  constructor(public id: number, public baseId: number, public document: string) {
-  }
-
-  async base(): Promise<Base> {
-    return new Base(this.baseId);
-  }
-}
-
-export class Comment {
-  constructor(public id: number, public documentId: number, public data: string) {
-  }
-}
+import { Document } from './entity/document';
+import { Comment } from './entity/comment';
 
 @Injectable()
 export class DocumentService {

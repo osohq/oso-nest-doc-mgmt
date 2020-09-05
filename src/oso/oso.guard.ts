@@ -10,7 +10,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Oso } from 'oso';
 import { User, Guest, Actor } from '../users/users.service';
-import { Document } from '../document/document.service';
+import { Document } from '../document/entity/document';
 import { Base } from '../base/base.service';
 
 export const Action = (action: string) => SetMetadata('action', action[0]);
