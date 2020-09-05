@@ -81,4 +81,32 @@ describe('DocumentService', () => {
     expect(document.baseId).toEqual(baseId);
     expect(document.document).toEqual(data);
   });
+
+  it('should be able to create and retrieve comments for a specific document', async () => {
+    const document =  await service.findOne(1);
+    expect(document).toBeDefined();
+
+    const commentData = 'A nice new comment';
+    const commentId = await service.createComment(document.id, commentData);
+    expect(commentId).toBeDefined();
+
+    // ensure comment retrieved is sane
+    let comments = await service.findCommentsByDocument(document.id);
+    expect(comments).toBeDefined();
+    expect(comments.length).toEqual(1);
+    expect(comments[0].id).toEqual(commentId);
+    expect(comments[0].documentId).toEqual(document.id);
+    expect(comments[0].data).toEqual(commentData);
+
+    // ensure multiple comments retrieved are sane
+
+    const comment2Data = 'Comment 2';
+    const comment2Id = await service.createComment(document.id, comment2Data);
+    comments = await service.findCommentsByDocument(document.id);
+    expect(comments).toBeDefined();
+    expect(comments.length).toEqual(2);
+    expect(comments[1].id).toEqual(comment2Id);
+    expect(comments[1].documentId).toEqual(document.id);
+    expect(comments[1].data).toEqual(comment2Data);
+  });
 });

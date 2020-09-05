@@ -47,7 +47,7 @@ export class DocumentService {
     return this.comments.filter(comment => comment.documentId === documentId);
   }
 
-  async addComment(documentId: number, data: string): Promise<number> {
+  async createComment(documentId: number, data: string): Promise<number> {
     const id = ++this.sequence;
     this.comments.push(new Comment(id, documentId, data));
     return id;
