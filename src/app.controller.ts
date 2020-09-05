@@ -1,9 +1,9 @@
-import { Controller, Get, Post, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post} from '@nestjs/common';
 import { AppService } from './app.service';
 import { UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from "./auth/local-auth.guard";
-import { OsoGuard, Action, Resource } from './oso/oso.guard';
-import { Request } from '@nestjs/common'
+import { LocalAuthGuard } from './auth/local-auth.guard';
+//import { OsoGuard, Action, Resource } from './oso/oso.guard';
+import { Request } from '@nestjs/common';
 
 @Controller()
 //@UseGuards(OsoGuard)

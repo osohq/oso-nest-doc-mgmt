@@ -1,4 +1,4 @@
-import { Controller, Param, Get, Req, UseGuards, Post, Body } from '@nestjs/common';
+import { Controller, Param, Get, UseGuards, Post, Body } from '@nestjs/common';
 import { CreateDocumentDto } from './dto/document.dto';
 import { Document, DocumentService } from './document.service';
 import { OsoInstance, Authorize } from '../oso/oso.guard';
@@ -13,20 +13,21 @@ export class DocumentController {
 
   @UseGuards(LocalAuthGuard)
   @Get(':id')
-  async findOne(@Param() param, @Authorize() authorize): Promise<string> {
+  async findOne(@Param() param : any, @Authorize() authorize: any): Promise<string> {
     const document = await this.documentService.findOne(Number.parseInt(param.id));
     await authorize(document);
-    return document.document;
+    return document ? document.document : '';
   }
 
   @Get()
-  async findAll(): Promise<Document[]> {
-    return await this.documentService.findAll()
+  async findAll(): Promise<Document[] > {
+    const documents = await this.documentService.findAll();
+    return documents ? documents : [];
   }
 
   @UseGuards(LocalAuthGuard)
   @Post('create')
   async create(@Body() document: CreateDocumentDto): Promise<number> {
-    return this.documentService.create(document.basId, document.document)
+    return this.documentService.create(document.baseId, document.document);
   }
 }
