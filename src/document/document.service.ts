@@ -26,11 +26,11 @@ export class DocumentService {
     return this.entities.find(document => document.id === id);
   }
 
-  async findAll(): Promise<Document[] | undefined> {
+  async findAll(): Promise<Document[]> {
     return [...this.entities];
   }
 
-  async findCommentsByDocument(documentId: number): Promise<Comment[] | undefined> {
+  async findCommentsByDocument(documentId: number): Promise<Comment[]> {
     return this.comments.filter(comment => comment.documentId === documentId);
   }
 
