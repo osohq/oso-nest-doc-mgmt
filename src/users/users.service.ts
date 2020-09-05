@@ -5,8 +5,8 @@ export class Actor {}
 export class Guest extends Actor {}
 
 export class User extends Actor {
-  constructor(public id: number, public username: String, public password: String){
-    super()
+  constructor(public id: number, public username: string, public password: string){
+    super();
   }
 }
 

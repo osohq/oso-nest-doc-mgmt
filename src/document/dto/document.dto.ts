@@ -1,4 +1,3 @@
 export class CreateDocumentDto {
-  basId: number;
-  document: string;
+  constructor(public baseId: number, public document: string) {}
 }

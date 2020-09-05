@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { Base } from '../base/base.service';
 
 export class Document {
-  constructor(public id: number, public baseId, public document: string) {
+  constructor(public id: number, public baseId: number, public document: string) {
   }
 
   async base(): Promise<Base> {
-    return new Base(this.baseId)
+    return new Base(this.baseId);
   }
 }
 
@@ -17,21 +17,22 @@ export class Comment {
 
 @Injectable()
 export class DocumentService {
-  private sequence: number = 100
+  private sequence = 100
   private readonly entities: Document[];
   private readonly comments: Comment[];
 
   constructor() {
     this.entities = [
-      new Document(1, 1, "Hello, World!"),
-      new Document(2, 2, "Goodbye, Moon!")
+      new Document(1, 1, 'Hello, World!'),
+      new Document(2, 2, 'Goodbye, Moon!')
     ];
+    this.comments = [];
   }
 
   async create(baseId: number, document: string): Promise<number> {
-    const id = ++this.sequence
-    this.entities.push(new Document(this.sequence, baseId, document))
-    return id
+    const id = ++this.sequence;
+    this.entities.push(new Document(this.sequence, baseId, document));
+    return id;
   }
 
   async findOne(id: number): Promise<Document | undefined> {
@@ -47,8 +48,8 @@ export class DocumentService {
   }
 
   async addComment(documentId: number, data: string): Promise<number> {
-    const id = ++this.sequence
-    this.comments.push(new Comment(id, documentId, data))
-    return id
+    const id = ++this.sequence;
+    this.comments.push(new Comment(id, documentId, data));
+    return id;
   }
 }

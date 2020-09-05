@@ -18,26 +18,26 @@ export const Resource = (resource: any) => SetMetadata('resource', resource);
 
 @Injectable()
 export class OsoInstance extends Oso implements CanActivate {
-    constructor(private reflector: Reflector, ) {
-      super();
-      this.registerClass(User);
-      this.registerClass(Guest);
-      this.registerClass(Actor);
-      this.registerClass(Document);
-      this.registerClass(Base);
-      this.registerConstant('console', console);
-      this.loadFile(__dirname + '/root.polar');
-      this.loadFile(__dirname + '/policy.polar');
-    }
+  constructor(private reflector: Reflector, ) {
+    super();
+    this.registerClass(User);
+    this.registerClass(Guest);
+    this.registerClass(Actor);
+    this.registerClass(Document);
+    this.registerClass(Base);
+    this.registerConstant('console', console);
+    this.loadFile(__dirname + '/root.polar');
+    this.loadFile(__dirname + '/policy.polar');
+  }
 
-    canActivate(context: ExecutionContext): boolean {
-      context.switchToHttp().getRequest().oso = this;
-      return true
-    }
+  canActivate(context: ExecutionContext): boolean {
+    context.switchToHttp().getRequest().oso = this;
+    return true;
+  }
 
-    unauthorized() {
-      throw new UnauthorizedException()
-    }
+  unauthorized() {
+    throw new UnauthorizedException();
+  }
 }
 
 
@@ -46,12 +46,12 @@ export const Authorize = createParamDecorator(
     const request = ctx.switchToHttp().getRequest();
     const user = request.user;
     const action = data || ctx.getHandler().name;
-    const oso = request.oso!;
+    const oso = request.oso;
     return async (resource: any) => {
-        if(!await oso.isAllowed(user, action, resource)) {
-          throw new ForbiddenException()
-        }
-    }
+      if(!await oso.isAllowed(user, action, resource)) {
+        throw new ForbiddenException();
+      }
+    };
   }
 );
 
