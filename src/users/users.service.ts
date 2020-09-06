@@ -1,14 +1,5 @@
 import { Injectable } from '@nestjs/common';
-
-export class Actor {}
-
-export class Guest extends Actor {}
-
-export class User extends Actor {
-  constructor(public id: number, public username: string, public password: string){
-    super();
-  }
-}
+import { User } from './entity/user';
 
 @Injectable()
 export class UsersService {

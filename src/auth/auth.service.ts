@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService, User, Guest } from '../users/users.service';
+import { Guest } from '../users/entity/guest';
+import { User } from '../users/entity/user';
+import { UsersService } from '../users/users.service';
 import { getLogger } from 'log4js';
 
 const logger = getLogger('AuthService');
