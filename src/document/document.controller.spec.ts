@@ -61,10 +61,8 @@ describe('Document Controller', () => {
       new Document(100, 100, 'First document'),
       new Document(100, 100, 'Second document')
     ];
-    const expectedPromise: Promise<Document[]> = Promise.resolve(expectedDocuments);
-
     const mockFindAll = jest.spyOn(service, 'findAll');
-    mockFindAll.mockReturnValueOnce(expectedPromise);
+    mockFindAll.mockReturnValueOnce(Promise.resolve(expectedDocuments));
 
     // call the function under test
     const actualDocuments: string[] = await controller.findAll();
@@ -78,9 +76,8 @@ describe('Document Controller', () => {
 
   it('should create a document', async () => {
     const expectedId = 100;
-    const expectedPromise: Promise<number> = Promise.resolve(expectedId);
     const mockCreate = jest.spyOn(service, 'create');
-    mockCreate.mockReturnValueOnce(expectedPromise);
+    mockCreate.mockReturnValueOnce(Promise.resolve(expectedId));
     const doc = new CreateDocumentDto(100, 'new document');
     const id: number = await controller.create(doc);
     // DocumentService.create() should have been called with the document base id and document fields
