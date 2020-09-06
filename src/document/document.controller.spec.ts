@@ -30,7 +30,7 @@ describe('Document Controller', () => {
     // prepare the return promise from DocumentService.findOne()
     const expectedDocument: Document = new Document(100, 100, 'The  document');
     // mock Oso's authorize function
-    const authorize = jest.fn();
+    const mockAuthorize = jest.fn();
 
     // mock param to have the document id
     const param = {id: expectedDocument.id.toString()};
@@ -41,13 +41,13 @@ describe('Document Controller', () => {
     mockFindOne.mockReturnValueOnce(Promise.resolve(expectedDocument));
 
     // call the function under test
-    const actualDocument: string = await controller.findOne(param, authorize);
+    const actualDocument: string = await controller.findOne(param, mockAuthorize);
 
     // expect service.findOne to have been called
     expect(mockFindOne).toHaveBeenCalledTimes(1);
     expect(mockFindOne).toHaveBeenCalledWith(Number.parseInt(param.id));
     // ensure authorize was called
-    expect(authorize).toHaveBeenCalledTimes(1);
+    expect(mockAuthorize).toHaveBeenCalledTimes(1);
     expect(actualDocument).toEqual(expectedDocument.document);
   });
 
