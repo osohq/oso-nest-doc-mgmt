@@ -17,7 +17,7 @@ export class DocumentController {
   async findOne(@Param() param: any, @Authorize() authorize: any): Promise<string> {
     const document = await this.documentService.findOne(Number.parseInt(param.id));
     await authorize(document);
-    return document ? document.document : '';
+    return document ? document.document : undefined;
   }
 
   @Get()
