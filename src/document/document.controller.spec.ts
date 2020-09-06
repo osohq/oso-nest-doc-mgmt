@@ -51,10 +51,20 @@ describe('Document Controller', () => {
     expect(actualDocument).toEqual(expectedDocument.document);
   });
 
-  // it('should return an empty array when findOne does not find a document', async () => {
-  //
-  //   const expectedReturnValue = await controller.findOne(param, authorize);
-  // });
+  it('should return undefined when findOne does not find a document', async () => {
+    const mockFindOne = jest.spyOn(service, 'findOne');
+    const empty: Document = undefined;
+    mockFindOne.mockReturnValueOnce(Promise.resolve(empty));
+
+    const authorize = jest.fn();
+    const param = {id: '100'};
+    const expectedReturnValue = await controller.findOne(param, authorize);
+    expect(mockFindOne).toHaveBeenCalledTimes(1);
+    expect(mockFindOne).toHaveBeenCalledWith(Number.parseInt(param.id));
+    expect(authorize).toHaveBeenCalledTimes(1);
+    expect(authorize).toHaveBeenCalledWith(empty);
+    expect(expectedReturnValue).toEqual(empty);
+  });
 
   it('should find all documents', async () => {
     const expectedDocuments: Document[] = [
