@@ -1,4 +1,4 @@
-import { ExecutionContext } from '@nestjs/common';
+import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
 import { OsoInstance } from './oso-instance';
@@ -38,5 +38,9 @@ describe('OsoInstance', () => {
 
     expect(mockRequest.oso).toBeDefined();
     expect(mockRequest.oso).toEqual(osoInstance);
+  });
+
+  it('should throw an UnauthorizedException on unauthorized()', () => {
+    expect(() => {osoInstance.unauthorized();}).toThrow(UnauthorizedException);
   });
 });
