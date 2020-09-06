@@ -15,4 +15,11 @@ describe('UsersService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('should find a user by username', async () => {
+    const username = 'john';
+    const user = await service.findOne(username);
+    expect(user).toBeDefined();
+    expect(user.username).toEqual(username);
+  });
 });
