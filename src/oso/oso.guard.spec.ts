@@ -57,12 +57,18 @@ describe('OsoGuard', () => {
       isAllowed: jest.fn()
     };
     request.oso = mockOso;
-    mockOso.isAllowed.mockReturnValueOnce(Promise.resolve(true));
+    mockOso.isAllowed.mockReturnValue(Promise.resolve(true));
     expect(request.oso).toBeDefined();
 
-    const authorizeFunction = authorizeFactory(data, executionContext);
+    let authorizeFunction = authorizeFactory(data, executionContext);
     await authorizeFunction(resource);
     expect(mockOso.isAllowed).toHaveBeenCalledTimes(1);
+
+    // test the case where data is undefined
+    // TODO: Break these out into separate tests so that it's not so fragile
+    authorizeFunction = authorizeFactory(undefined, executionContext);
+    await authorizeFunction(resource);
+    expect(mockOso.isAllowed).toHaveBeenCalledTimes(2);
 
     // test the unauthorized case
     mockOso.isAllowed.mockReturnValueOnce(Promise.resolve(false));
