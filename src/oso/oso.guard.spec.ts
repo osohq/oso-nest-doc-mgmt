@@ -1,9 +1,10 @@
-import { ExecutionContext, Type } from '@nestjs/common';
+import { ExecutionContext, ForbiddenException, Type, UnauthorizedException } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Reflector } from '@nestjs/core';
 import { mock } from 'jest-mock-extended';
+import { Oso } from 'oso';
 import { OsoInstance } from './oso-instance';
-import { OsoGuard } from './oso.guard';
+import { authorizeFactory, OsoGuard } from './oso.guard';
 
 describe('OsoGuard', () => {
   let handler;
@@ -11,10 +12,11 @@ describe('OsoGuard', () => {
   let osoInstance: OsoInstance;
   let executionContext: ExecutionContext;
   let osoGuard: OsoGuard;
-  let request: Request;
+  let mockGetRequest;
+  let request;
   beforeEach(() => {
     handler = jest.fn();
-    request = mock<Request>();
+    request = {};
     reflector = mock<Reflector>();
     osoInstance = mock<OsoInstance>();
     executionContext = mock<ExecutionContext>();
@@ -22,7 +24,8 @@ describe('OsoGuard', () => {
 
     jest.spyOn(executionContext, 'getHandler').mockReturnValue(handler);
     jest.spyOn(executionContext, 'switchToHttp').mockReturnValue(httpContext);
-    jest.spyOn(httpContext, 'getRequest').mockReturnValue(request);
+    mockGetRequest = jest.spyOn(httpContext, 'getRequest');
+    mockGetRequest.mockReturnValue(request);
 
     osoGuard = new OsoGuard(reflector, osoInstance);
   });
@@ -44,5 +47,33 @@ describe('OsoGuard', () => {
 
     expect(mockIsAllowed).toHaveBeenCalledTimes(1);
     expect(returnValue).toBeTruthy();
+  });
+
+  it('should have an authorize factory for the @Authorize decorator', async () => {
+    const data = 'data';
+
+    const resource = {};
+    const mockOso = {
+      isAllowed: jest.fn()
+    };
+    request.oso = mockOso;
+    mockOso.isAllowed.mockReturnValueOnce(Promise.resolve(true));
+    expect(request.oso).toBeDefined();
+
+    const authorizeFunction = authorizeFactory(data, executionContext);
+    await authorizeFunction(resource);
+    expect(mockOso.isAllowed).toHaveBeenCalledTimes(1);
+
+    // test the unauthorized case
+    mockOso.isAllowed.mockReturnValueOnce(Promise.resolve(false));
+    // XXX: This should be prettier, but the expect infrastructure for testing if an async function throws an error
+    // doesn't seem to work.
+    let err;
+    try {
+      await authorizeFunction(resource);
+    } catch (e) {
+      err = e;
+    }
+    expect(err).toEqual(new ForbiddenException());
   });
 });
