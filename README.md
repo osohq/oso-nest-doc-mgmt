@@ -107,18 +107,7 @@ Brief recap of what we've accomplished & the benefits of using Oso
 This README document will contain the tutorial from the blog post, minus any editorializing: just dry technical docs.
 
 ## Notes
-<<<<<<< HEAD
-* This is outline is just a proposal. Happy to discuss any mods or other directions.
-* There are pros and cons to using an existing framework and TypeScript. 
-    * Pros:
-        * TypeScript is what all the cool kids are doing
-        * It looks like less of a toy when the demo lives in a "real" web app.
-        * It doubles as an integration guide for that particular framework
-    * Cons:
-        * Not everyone uses TypeScript
-        * The framework code adds noise that makes it a little more difficult to separate what Oso does from what the
-        framework does.  
-=======
+
 From Sam re: his conversation with customer that motivated the sample app:
 
 * Why roles aren't enough
@@ -153,5 +142,5 @@ From Sam re: his conversation with customer that motivated the sample app:
 
 * Closing remark: "it makes me just want to write the spec out in plain English because that's basically what the rules are anyway"
 
-![My Nest Test](https://circleci.com/gh/oletizi/oso-nest-demo.svg?style=svg)
->>>>>>> 52ffcf7... - added circleci build badge
+
+[![My Nest Test](https://circleci.com/gh/oletizi/oso-nest-demo.svg?style=svg)](https://app.circleci.com/pipelines/github/oletizi/oso-nest-demo)

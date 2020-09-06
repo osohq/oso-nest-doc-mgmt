@@ -18,13 +18,15 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "cli": "ts-node test/test-cli.ts"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.0.0",
+    "@types/inquirer": "^7.3.1",
     "log4js": "^6.3.0",
     "oso": "0.5.0",
     "passport": "^0.4.1",
@@ -47,6 +49,7 @@
     "eslint": "7.1.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",
+    "inquirer": "^7.3.3",
     "jest": "26.0.1",
     "jest-mock-extended": "^1.0.10",
     "prettier": "^1.19.1",
@@ -54,6 +57,7 @@
     "ts-jest": "26.1.0",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.6.2",
+    "ts-node-dev": "^1.0.0-pre.62",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.7.4"
   },
