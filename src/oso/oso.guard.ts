@@ -20,7 +20,7 @@ export const Authorize = createParamDecorator(
     const action = data || ctx.getHandler().name;
     const oso = request.oso;
     return async (resource: any) => {
-      if(!await oso.isAllowed(user, action, resource)) {
+      if (!await oso.isAllowed(user, action, resource)) {
         throw new ForbiddenException();
       }
     };
@@ -29,7 +29,8 @@ export const Authorize = createParamDecorator(
 
 @Injectable()
 export class OsoGuard implements CanActivate {
-  constructor(private reflector: Reflector, private oso: OsoInstance) {}
+  constructor(private reflector: Reflector, private oso: OsoInstance) {
+  }
 
   canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -40,6 +41,6 @@ export class OsoGuard implements CanActivate {
     const resource =
       this.reflector.get<string[]>('resource', context.getHandler()) ||
       context.getClass().name;
-    return Promise.resolve(this.oso.isAllowed(actor, action, resource));
+    return this.oso.isAllowed(actor, action, resource);
   }
 }
