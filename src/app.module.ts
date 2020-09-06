@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { OsoGuard, OsoInstance } from './oso/oso.guard';
+import { OsoInstance } from './oso/oso-instance';
+import { OsoGuard} from './oso/oso.guard';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DocumentService } from './document/document.service';

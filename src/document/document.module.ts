@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
+import { OsoInstance } from '../oso/oso-instance';
 import { DocumentController } from './document.controller';
 import { DocumentService } from './document.service';
-import { OsoInstance } from 'src/oso/oso.guard';
 
 @Module({
   imports: [],

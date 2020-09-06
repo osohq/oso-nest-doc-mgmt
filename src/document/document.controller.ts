@@ -1,7 +1,8 @@
 import { Controller, Param, Get, UseGuards, Post, Body } from '@nestjs/common';
+import { OsoInstance } from '../oso/oso-instance';
 import { CreateDocumentDto } from './dto/document.dto';
 import { DocumentService } from './document.service';
-import { OsoInstance, Authorize } from '../oso/oso.guard';
+import { Authorize } from '../oso/oso.guard';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
 
 
