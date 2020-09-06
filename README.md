@@ -141,4 +141,4 @@ From Sam re: his conversation with customer that motivated the sample app:
 
 * Closing remark: "it makes me just want to write the spec out in plain English because that's basically what the rules are anyway"
 
-![My Nest Test](https://circleci.com/gh/oletizi/oso-nest-demo.svg?style=svg)
+[![My Nest Test](https://circleci.com/gh/oletizi/oso-nest-demo.svg?style=svg)](https://app.circleci.com/pipelines/github/oletizi/oso-nest-demo)

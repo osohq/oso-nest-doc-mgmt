@@ -6,7 +6,7 @@ import { Authorize } from '../oso/oso.guard';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
 
 
-//@UseGuards(OsoInstance)
+@UseGuards(OsoInstance)
 @Controller('document')
 export class DocumentController {
   constructor(private readonly documentService: DocumentService) {
@@ -20,6 +20,7 @@ export class DocumentController {
     return document ? document.document : undefined;
   }
 
+  @UseGuards(LocalAuthGuard)
   @Get()
   async findAll(): Promise<string[]> {
     return (await this.documentService.findAll()).map(document => document.document);
