@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { OsoInstance } from './oso/oso.guard';
+import { OsoInstance } from './oso/oso-instance';
 
 describe('AppController', () => {
   let appController: AppController;
