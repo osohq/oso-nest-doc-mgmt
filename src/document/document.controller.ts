@@ -21,8 +21,8 @@ export class DocumentController {
   }
 
   @Get()
-  async findAll(): Promise<Document[]> {
-    return await this.documentService.findAll();
+  async findAll(): Promise<string[]> {
+    return (await this.documentService.findAll()).map(document => document.document);
   }
 
   @UseGuards(LocalAuthGuard)

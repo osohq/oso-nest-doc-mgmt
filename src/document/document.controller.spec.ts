@@ -29,8 +29,6 @@ describe('Document Controller', () => {
   it('should find a document by id', async () => {
     // prepare the return promise from DocumentService.findOne()
     const expectedDocument: Document = new Document(100, 100, 'The  document');
-    const expectedPromise = Promise.resolve(expectedDocument);
-
     // mock Oso's authorize function
     const authorize = jest.fn();
 
@@ -40,47 +38,45 @@ describe('Document Controller', () => {
     // mock service.findOne()
     const mockFindOne = jest.spyOn(service, 'findOne');
     // set the expected return promise from  service.findOne()
-    mockFindOne.mockReturnValueOnce(expectedPromise);
+    mockFindOne.mockReturnValueOnce(Promise.resolve(expectedDocument));
 
     // call the function under test
-    const actualPromise: Promise<string> = controller.findOne(param, authorize);
-
-    // wait for the promise to resolve
-    const actualDocument = await actualPromise;
+    const actualDocument: string = await controller.findOne(param, authorize);
 
     // expect service.findOne to have been called
     expect(mockFindOne).toHaveBeenCalledTimes(1);
     expect(mockFindOne).toHaveBeenCalledWith(Number.parseInt(param.id));
     // ensure authorize was called
     expect(authorize).toHaveBeenCalledTimes(1);
-    expect(actualPromise).toEqual(expectedPromise);
     expect(actualDocument).toEqual(expectedDocument.document);
   });
 
-  it ('should find all documents', async () => {
+  // it('should return an empty array when findOne does not find a document', async () => {
+  //
+  //   const expectedReturnValue = await controller.findOne(param, authorize);
+  // });
+
+  it('should find all documents', async () => {
     const expectedDocuments: Document[] = [
       new Document(100, 100, 'First document'),
       new Document(100, 100, 'Second document')
     ];
-    const expectedPromise = Promise.resolve(expectedDocuments);
+    const expectedPromise: Promise<Document[]> = Promise.resolve(expectedDocuments);
 
     const mockFindAll = jest.spyOn(service, 'findAll');
     mockFindAll.mockReturnValueOnce(expectedPromise);
 
     // call the function under test
-    const actualPromise: Promise<Document[]> = controller.findAll();
-    // wait for the promise to resolve
-    const actualDocuments: Document[] = await actualPromise;
+    const actualDocuments: string[] = await controller.findAll();
 
     // expect service.findAll to have been called
     expect(mockFindAll).toHaveBeenCalledTimes(1);
     // TODO: Add authorize() and test for call: https://github.com/oletizi/oso-nest-demo/issues/13
 
-    expect(actualPromise).toEqual(expectedPromise);
-    expect(actualDocuments).toEqual(expectedDocuments);
+    expect(actualDocuments).toEqual(expectedDocuments.map((document) => document.document));
   });
 
-  it( 'should create a document', async() => {
+  it('should create a document', async () => {
     const expectedId = 100;
     const expectedPromise: Promise<number> = Promise.resolve(expectedId);
     const mockCreate = jest.spyOn(service, 'create');
