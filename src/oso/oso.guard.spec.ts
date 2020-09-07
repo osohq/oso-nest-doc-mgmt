@@ -50,6 +50,7 @@ describe('OsoGuard', () => {
   });
 
   it('should have an authorize factory for the @Authorize decorator', async () => {
+    // TODO: refactor the plumbing so the different cases may easily have their own tests.
     const data = 'data';
 
     const resource = {};
@@ -70,16 +71,8 @@ describe('OsoGuard', () => {
     await authorizeFunction(resource);
     expect(mockOso.isAllowed).toHaveBeenCalledTimes(2);
 
-    // test the unauthorized case
+    // test the unauthorized case: should throw a ForbiddenException
     mockOso.isAllowed.mockReturnValueOnce(Promise.resolve(false));
-    // XXX: This should be prettier, but the expect infrastructure for testing if an async function throws an error
-    // doesn't seem to work.
-    let err;
-    try {
-      await authorizeFunction(resource);
-    } catch (e) {
-      err = e;
-    }
-    expect(err).toEqual(new ForbiddenException());
+    await expect(authorizeFunction(resource)).rejects.toEqual(new ForbiddenException());
   });
 });

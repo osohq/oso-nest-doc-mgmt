@@ -3,14 +3,13 @@ import {
   createParamDecorator,
   ExecutionContext,
   ForbiddenException,
-  Injectable,
+  Injectable, Logger,
   SetMetadata,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { OsoInstance } from './oso-instance';
 
-// TODO: Add tests for Action and an example usage
-//export const Action = (action: string) => SetMetadata('action', action[0]);
+export const Action = (action: string) => SetMetadata('action', action[0]);
 export const Resource = (resource: any) => SetMetadata('resource', resource);
 
 export const authorizeFactory = (data: string | undefined, ctx: ExecutionContext) => {
@@ -29,6 +28,9 @@ export const Authorize = createParamDecorator(authorizeFactory);
 
 @Injectable()
 export class OsoGuard implements CanActivate {
+
+  private readonly logger = new Logger(OsoGuard.name);
+
   constructor(private reflector: Reflector, private oso: OsoInstance) {
   }
 
@@ -41,6 +43,7 @@ export class OsoGuard implements CanActivate {
     const resource =
       this.reflector.get<string[]>('resource', context.getHandler()) ||
       context.getClass().name;
+    this.logger.log(`Checking to see if actor is authorized: actor: ${actor}, action: ${action}, resource: ${resource}`);
     return this.oso.isAllowed(actor, action, resource);
   }
 }
