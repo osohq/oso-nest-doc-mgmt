@@ -25,6 +25,10 @@ export class OsoInstance extends Oso implements CanActivate {
     return true;
   }
 
+  // isAllowed(actor: unknown, action: unknown, resource: unknown): Promise<boolean> {
+  //   return super.isAllowed(actor, action, resource);
+  // }
+
   unauthorized() {
     throw new UnauthorizedException();
   }

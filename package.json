@@ -18,8 +18,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
-    "cli": "ts-node test/test-cli.ts"
+    "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
@@ -27,7 +26,6 @@
     "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.0.0",
     "@types/inquirer": "^7.3.1",
-    "log4js": "^6.3.0",
     "oso": "0.5.0",
     "passport": "^0.4.1",
     "passport-http": "^0.3.0",
