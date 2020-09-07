@@ -9,7 +9,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { OsoInstance } from './oso-instance';
 
-export const Action = (action: string) => SetMetadata('action', action[0]);
+export const Action = (action: string) => SetMetadata('action', action);
 export const Resource = (resource: any) => SetMetadata('resource', resource);
 
 export const authorizeFactory = (data: string | undefined, ctx: ExecutionContext) => {

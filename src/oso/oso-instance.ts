@@ -5,9 +5,13 @@ import { Document } from '../document/entity/document';
 import { Actor } from '../users/entity/actor';
 import { Guest } from '../users/entity/guest';
 import { User } from '../users/entity/user';
+import { getLogger } from 'log4js';
+
 
 @Injectable()
 export class OsoInstance extends Oso implements CanActivate {
+  private readonly logger = getLogger(OsoInstance.name);
+
   constructor() {
     super();
     this.registerClass(User);
@@ -26,6 +30,7 @@ export class OsoInstance extends Oso implements CanActivate {
   }
 
   // isAllowed(actor: unknown, action: unknown, resource: unknown): Promise<boolean> {
+  //   this.logger.info('isAllowed(): actor: ', actor, '; action: ', action, '; resource: ', resource);
   //   return super.isAllowed(actor, action, resource);
   // }
 

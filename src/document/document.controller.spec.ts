@@ -1,5 +1,9 @@
 jest.mock('./document.service');
+import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
+import { OsoInstance } from '../oso/oso-instance';
+import { OsoGuard } from '../oso/oso.guard';
+import { OsoModule } from '../oso/oso.module';
 import { DocumentController } from './document.controller';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/document.dto';
@@ -11,8 +15,10 @@ describe('Document Controller', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [OsoModule],
       controllers: [DocumentController],
-      providers: [DocumentService]
+      providers: [DocumentService, OsoGuard],
+      exports: [OsoModule]
     }).compile();
     service = module.get<DocumentService>(DocumentService);
     controller = module.get<DocumentController>(DocumentController);
