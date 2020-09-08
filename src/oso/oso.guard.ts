@@ -18,7 +18,9 @@ export const authorizeFactory = (data: string | undefined, ctx: ExecutionContext
   const action = data || ctx.getHandler().name;
   const oso = request.oso;
   return async (resource: any) => {
-    if (!await oso.isAllowed(user, action, resource)) {
+    const isAllowed = await oso.isAllowed(user, action, resource);
+    console.log('authorize(): user: ', user, '; action: ', action, '; resource: ', resource, 'isAllowed: ', isAllowed);
+    if (!isAllowed) {
       throw new ForbiddenException();
     }
   };
