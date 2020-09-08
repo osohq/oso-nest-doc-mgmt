@@ -13,6 +13,7 @@ describe('OsoInstance', () => {
     }).compile();
     executionContext = mockDeep<ExecutionContext>();
     osoInstance = testingModule.get<OsoInstance>(OsoInstance);
+    await osoInstance.init();
   });
 
   afterEach(() => {

@@ -1,3 +1,5 @@
+import { User } from '../users/entity/user';
+
 const {Oso} = require('oso');
 const {getLogger} = require('log4js');
 const logger = getLogger('oso.rules.test');
@@ -8,7 +10,8 @@ describe('oso.rules.test', () => {
   beforeEach(async () => {
     oso = new Oso();
     oso.registerClass(User);
-    oso.registerClass(DocumentResource);
+    //oso.registerClass(DocumentResource);
+    oso.registerConstant('console', console);
     await oso.loadFile(`${__dirname}/root.polar`);
     await oso.loadFile(`${__dirname}/policy.polar`);
   });
@@ -26,21 +29,4 @@ describe('oso.rules.test', () => {
     expect(await oso.isAllowed(new User(1, 'john', 'changeme'), 'read', 'bar')).toBeTruthy();
   });
 
-
 });
-
-
-class DocumentResource {
-  constructor(id, baseId, document) {
-  }
-}
-
-class User {
-  constructor(id, username, password) {
-  }
-}
-
-//
-// test().then(() => {
-//   logger.info('Test complete.');
-// }).catch(e => console.error(e));
