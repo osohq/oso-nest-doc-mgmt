@@ -1,5 +1,6 @@
 import { Document } from '../document/entity/document';
 import { User } from '../users/entity/user';
+import { Guest } from '../users/entity/guest';
 import { OsoInstance } from './oso-instance';
 
 const {getLogger} = require('log4js');
@@ -32,5 +33,9 @@ describe('oso.rules.test', () => {
       .toBeTruthy();
   }
   );
+  it('should allow guests to read every Base', async () => {
+    expect(await oso.isAllowed(new Guest(), 'read', new Document(1, 1, 'document text')))
+      .toBeTruthy();
+  });
 
 });
