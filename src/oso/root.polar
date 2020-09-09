@@ -35,6 +35,8 @@ role(user: User, "admin", document: Document) if
 role(user: User, "member", document: Document) if
     role(user, "admin", document);
 
+role(_guest: Guest, "guest", _document: Document);
+
 ## Permission groupings
 
 # "Edit entities"
