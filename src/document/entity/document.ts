@@ -1,7 +1,7 @@
 import { Base } from '../../base/base.service';
 
 export class Document {
-  constructor(public id: number, public baseId: number, public document: string, public allowsDocumentComment: boolean) {
+  constructor(public id: number, public baseId: number, public document: string, public allowsDocumentComment: boolean, public allowsInlineComment: boolean) {
   }
 
   async base(): Promise<Base> {
