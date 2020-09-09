@@ -8,15 +8,20 @@ const logger = getLogger('oso.rules.spec');
 getLogger().level = 'info';
 
 describe('oso.rules.test', () => {
+  let guest: Guest;
   let john: User, alexandra: User;
   let johnDocOne: Document, johnDocTwo: Document, alexandraDocOne: Document;
   let oso: OsoInstance;
+  const actions = {
+    addDocumentComment: 'addDocumentComment'
+  };
   beforeEach(async () => {
+    guest = new Guest();
     john = new User(1, 'john', 'pass');
     alexandra = new User(2, 'alexandra', 'pass');
-    johnDocOne = new Document(1, 1, 'I am a document owned by john b/c my baseId is john\'s user id.');
-    johnDocTwo = new Document(2, 1, 'I am also a document owned by john.');
-    alexandraDocOne = new Document(3, 2, 'I am a document owned by alexandra');
+    johnDocOne = new Document(1, 1, 'I am a document owned by john b/c my baseId is john\'s user id.', true);
+    johnDocTwo = new Document(2, 1, 'I am also a document owned by john.', false);
+    alexandraDocOne = new Document(3, 2, 'I am a document owned by alexandra', false);
     oso = new OsoInstance();
     await oso.initialized();
   });
@@ -36,18 +41,26 @@ describe('oso.rules.test', () => {
 
   it('should allow user "testuser" to read document.id = 1', async () => {
     expect(await oso.isAllowed(new User(1, 'testuser', 'changeme'),
-      'read', new Document(1, 1, 'document text')))
+      'read', new Document(1, 1, 'document text', false)))
       .toBeTruthy();
   }
   );
   it('should allow guests to read every Document', async () => {
-    expect(await oso.isAllowed(new Guest(), 'read', new Document(1, 1, 'document text')))
+    expect(await oso.isAllowed(new Guest(), 'read', new Document(1, 1, 'document text', false)))
       .toBeTruthy();
   });
 
-  it('should allow users to read every Document', async () => {
+  it('should allow all users to read every Document', async () => {
     expect(await oso.isAllowed(john, 'read', johnDocOne)).toBeTruthy();
     expect(await oso.isAllowed(alexandra, 'read', johnDocOne)).toBeTruthy();
+  });
+
+  it('should allow guests to "addDocumentComment" if document.allowsDocumentComment', async () => {
+    expect(await oso.isAllowed(guest, actions.addDocumentComment, johnDocOne)).toBeTruthy();
+  });
+
+  it ('should NOT allow guesets to "addDocumentComment" if ! document.allowsDocumentComment', async () => {
+    expect(await oso.isAllowed(guest, actions.addDocumentComment, johnDocTwo)).toBeFalsy();
   });
 
 });

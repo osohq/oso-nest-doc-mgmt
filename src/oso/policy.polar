@@ -6,9 +6,9 @@ allow(user: Guest, "read", document: Document) if
 allow(user: User, "read", document:Document) if
     role(user, "guest", document);
 
-#allow(user: Guest, "addDocumentComment", document: Document) if
-#    role(user, "guest", document) and
-#    document.allowsDocumentComment;
+allow(user: Guest, "addDocumentComment", document: Document) if
+    role(user, "guest", document) and
+    document.allowsDocumentComment;
 
 #allow(user: Guest, "addInlineComment", document: Document) if
 #    role(user, "guest", document) and
