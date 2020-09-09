@@ -34,7 +34,7 @@ describe('Document Controller', () => {
 
   it('should find a document by id', async () => {
     // prepare the return promise from DocumentService.findOne()
-    const expectedDocument: Document = new Document(100, 100, 'The  document');
+    const expectedDocument: Document = new Document(100, 100, 'The  document', false, false);
     // mock Oso's authorize function
     const mockAuthorize = jest.fn();
 
@@ -74,8 +74,8 @@ describe('Document Controller', () => {
 
   it('should find all documents', async () => {
     const expectedDocuments: Document[] = [
-      new Document(100, 100, 'First document'),
-      new Document(100, 100, 'Second document')
+      new Document(100, 100, 'First document', false, false),
+      new Document(100, 100, 'Second document', false, false)
     ];
     const mockFindAll = jest.spyOn(service, 'findAll');
     mockFindAll.mockReturnValueOnce(Promise.resolve(expectedDocuments));
