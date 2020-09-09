@@ -5,6 +5,7 @@ import { DocumentModule } from '../src/document/document.module';
 
 describe('DocumentController (e2e)', () => {
   let app: INestApplication;
+  let server;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -14,11 +15,17 @@ describe('DocumentController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+    server = app.getHttpServer();
   });
 
   it('/document (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/document')
-      .expect(200);
+    return request(server).get('/document')
+      .then(res => {
+        console.log('body: ', res.body);
+      });
+
+    // return request(app.getHttpServer())
+    //   .get('/document')
+    //   .expect(200);
   });
 });
