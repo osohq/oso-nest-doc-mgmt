@@ -69,4 +69,8 @@ describe('oso.rules.test', () => {
   it('should allow guests to "addInlineComment" if document.allowsInlineComment', async () => {
     expect(await oso.isAllowed(guest, actions.addInlineComment, allPermissionsDoc)).toBeTruthy();
   });
+
+  it( 'should NOT allow guests to "addInlineComment" if ! document.allowsInlineComment', async() => {
+    expect(await oso.isAllowed(guest, actions.addInlineComment, noPermissionsDoc)).toBeFalsy();
+  });
 });
