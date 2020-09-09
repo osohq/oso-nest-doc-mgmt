@@ -30,47 +30,47 @@ describe('oso.rules.test', () => {
   });
 
   it('should not allow by default', async () => {
-    expect(await oso.isAllowed('no', 'matching', 'rule')).toBeFalsy();
+    expect(await oso.isAllowed('no', 'matching', 'rule')).toEqual(false);
   });
 
   it('should allow something super basic', async () => {
     const isAllowed = await oso.isAllowed('foo', 'read', 'bar');
-    expect(isAllowed).toBeTruthy();
+    expect(isAllowed).toEqual(true);
   });
 
   it('should allow any User to read any "bar"', async () => {
-    expect(await oso.isAllowed(john, 'read', 'bar')).toBeTruthy();
+    expect(await oso.isAllowed(john, 'read', 'bar')).toEqual(true);
   });
 
   it('should allow user "testuser" to read document.id = 1', async () => {
     expect(await oso.isAllowed(new User(1, 'testuser', 'changeme'),
       'read', new Document(1, 1, 'document text', false, false)))
-      .toBeTruthy();
+      .toEqual(true);
   }
   );
   it('should allow guests to read every Document', async () => {
     expect(await oso.isAllowed(new Guest(), 'read', new Document(1, 1, 'document text', false, false)))
-      .toBeTruthy();
+      .toEqual(true);
   });
 
   it('should allow all users to read every Document', async () => {
-    expect(await oso.isAllowed(john, 'read', johnDocOne)).toBeTruthy();
-    expect(await oso.isAllowed(alexandra, 'read', johnDocOne)).toBeTruthy();
+    expect(await oso.isAllowed(john, 'read', johnDocOne)).toEqual(true);
+    expect(await oso.isAllowed(alexandra, 'read', johnDocOne)).toEqual(true);
   });
 
   it('should allow guests to "addDocumentComment" if document.allowsDocumentComment', async () => {
-    expect(await oso.isAllowed(guest, actions.addDocumentComment, allPermissionsDoc)).toBeTruthy();
+    expect(await oso.isAllowed(guest, actions.addDocumentComment, allPermissionsDoc)).toEqual(true);
   });
 
   it ('should NOT allow guesets to "addDocumentComment" if ! document.allowsDocumentComment', async () => {
-    expect(await oso.isAllowed(guest, actions.addDocumentComment, noPermissionsDoc)).toBeFalsy();
+    expect(await oso.isAllowed(guest, actions.addDocumentComment, noPermissionsDoc)).toEqual(false);
   });
 
   it('should allow guests to "addInlineComment" if document.allowsInlineComment', async () => {
-    expect(await oso.isAllowed(guest, actions.addInlineComment, allPermissionsDoc)).toBeTruthy();
+    expect(await oso.isAllowed(guest, actions.addInlineComment, allPermissionsDoc)).toEqual(true);
   });
 
   it( 'should NOT allow guests to "addInlineComment" if ! document.allowsInlineComment', async() => {
-    expect(await oso.isAllowed(guest, actions.addInlineComment, noPermissionsDoc)).toBeFalsy();
+    expect(await oso.isAllowed(guest, actions.addInlineComment, noPermissionsDoc)).toEqual(false);
   });
 });
