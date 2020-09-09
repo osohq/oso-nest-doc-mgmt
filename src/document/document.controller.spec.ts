@@ -94,10 +94,14 @@ describe('Document Controller', () => {
     const expectedId = 100;
     const mockCreate = jest.spyOn(service, 'create');
     mockCreate.mockReturnValueOnce(Promise.resolve(expectedId));
-    const doc = new CreateDocumentDto(100, 'new document');
+    const doc = new CreateDocumentDto();
+    doc.baseId = 100;
+    doc.document = 'new document';
+    doc.allowsDocumentComment = true;
+    doc.allowsInlineComment = true;
     const id: number = await controller.create(doc);
-    // DocumentService.create() should have been called with the document base id and document fields
-    expect(mockCreate).toHaveBeenCalledWith(doc.baseId, doc.document);
+    // DocumentService.create() should have been called with the document DTO
+    expect(mockCreate).toHaveBeenCalledWith(doc);
     expect(id).toEqual(expectedId);
   });
 });

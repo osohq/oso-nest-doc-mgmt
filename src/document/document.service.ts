@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CreateDocumentDto } from './dto/document.dto';
 import { Document } from './entity/document';
 import { Comment } from './entity/comment';
 
@@ -16,9 +17,9 @@ export class DocumentService {
     this.comments = [];
   }
 
-  async create(baseId: number, document: string): Promise<number> {
+  async create(document: CreateDocumentDto): Promise<number> {
     const id = ++this.sequence;
-    this.entities.push(new Document(this.sequence, baseId, document, false, false));
+    this.entities.push(new Document(this.sequence, document.baseId, document.document, document.allowsDocumentComment, document.allowsInlineComment));
     return id;
   }
 

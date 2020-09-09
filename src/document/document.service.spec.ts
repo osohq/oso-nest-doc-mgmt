@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { OsoInstance } from '../oso/oso-instance';
 import { DocumentService } from './document.service';
+import { CreateDocumentDto } from './dto/document.dto';
 import { Document } from './entity/document';
 import { Comment } from './entity/comment';
 
@@ -8,7 +10,7 @@ describe('DocumentService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [DocumentService],
+      providers: [DocumentService, OsoInstance],
     }).compile();
 
     service = module.get<DocumentService>(DocumentService);
@@ -42,7 +44,13 @@ describe('DocumentService', () => {
   it('should be able to create a new document', async () => {
     const baseId = 100;
     const data = 'a nice new document';
-    const id: number = await service.create(baseId, data);
+    const createDocument = new CreateDocumentDto();
+    createDocument.baseId = baseId;
+    createDocument.document = data;
+    createDocument.allowsDocumentComment = true;
+    createDocument.allowsInlineComment = false;
+
+    const id: number = await service.create(createDocument);
     expect(id).toBeDefined();
 
     const document: Document = await service.findOne(id);
@@ -50,6 +58,8 @@ describe('DocumentService', () => {
     expect(document.id).toEqual(id);
     expect(document.baseId).toEqual(baseId);
     expect(document.document).toEqual(data);
+    expect(document.allowsDocumentComment).toEqual(createDocument.allowsDocumentComment);
+    expect(document.allowsInlineComment).toEqual(createDocument.allowsInlineComment);
   });
 
   it('should be able to create and retrieve comments for a specific document', async () => {
