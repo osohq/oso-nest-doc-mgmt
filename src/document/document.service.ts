@@ -10,15 +10,15 @@ export class DocumentService {
 
   constructor() {
     this.entities = [
-      new Document(1, 1, 'Hello, World!'),
-      new Document(2, 2, 'Goodbye, Moon!')
+      new Document(1, 1, 'Hello, World!', false, false),
+      new Document(2, 2, 'Goodbye, Moon!', false, false)
     ];
     this.comments = [];
   }
 
   async create(baseId: number, document: string): Promise<number> {
     const id = ++this.sequence;
-    this.entities.push(new Document(this.sequence, baseId, document));
+    this.entities.push(new Document(this.sequence, baseId, document, false, false));
     return id;
   }
 
