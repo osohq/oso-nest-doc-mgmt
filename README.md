@@ -65,7 +65,7 @@ In [DocumentController](./src/document/document.controller.ts), replace `LocalRe
 
 After nest has recompiled the code and restarted itself, _unauthenticated_ access won't be blocked. Instead, the
 [`OsoInstance`](./src/oso/oso-instance.ts) and [`OsoGuard`](./src/oso/oso.guard.ts) will determine what is authorized 
-based on the rules in [base.polar](./src/oso/base.polar) and [policy.polar](./src/oso/policy.polar). 
+based on the rules in [root.polar](./src/oso/root.polar) and [policy.polar](./src/oso/policy.polar). 
 
 Access to the following URLs without valid credentials will be allowed:
 
