@@ -6,7 +6,7 @@ import { OsoGuard } from '../oso/oso.guard';
 import { OsoModule } from '../oso/oso.module';
 import { DocumentController } from './document.controller';
 import { DocumentService } from './document.service';
-import { CreateDocumentDto } from './dto/document.dto';
+import { CreateDocumentDto, DocumentSetDto, FindDocumentDto } from './dto/document.dto';
 import { Document } from './entity/document';
 
 describe('Document Controller', () => {
@@ -81,13 +81,13 @@ describe('Document Controller', () => {
     mockFindAll.mockReturnValueOnce(Promise.resolve(expectedDocuments));
 
     // call the function under test
-    const actualDocuments: string[] = await controller.findAll();
+    const actualDocuments: DocumentSetDto = await controller.findAll();
 
     // expect service.findAll to have been called
     expect(mockFindAll).toHaveBeenCalledTimes(1);
     // TODO: Add authorize() and test for call: https://github.com/oletizi/oso-nest-demo/issues/13
 
-    expect(actualDocuments).toEqual(expectedDocuments.map((document) => document.document));
+    expect(actualDocuments).toEqual(new DocumentSetDto(expectedDocuments));
   });
 
   it('should create a document', async () => {

@@ -1,6 +1,6 @@
 import { Controller, Param, Get, UseGuards, Post, Body } from '@nestjs/common';
 import { OsoInstance } from '../oso/oso-instance';
-import { CreateDocumentDto } from './dto/document.dto';
+import { CreateDocumentDto, DocumentSetDto } from './dto/document.dto';
 import { DocumentService } from './document.service';
 import { Action, Authorize } from '../oso/oso.guard';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
@@ -21,8 +21,8 @@ export class DocumentController {
 
   @Action('read')
   @Get()
-  async findAll(): Promise<string[]> {
-    return (await this.documentService.findAll()).map(document => document.document);
+  async findAll(): Promise<DocumentSetDto> {
+    return new DocumentSetDto(await this.documentService.findAll());
   }
 
   @Action('create')
