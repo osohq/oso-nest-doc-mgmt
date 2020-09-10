@@ -29,7 +29,7 @@ If you try to get documents with invalid user credentials:
     curl http://localhost:3000/document
     curl http://localhost:3000/document/1
 
-you should receive an 401 Unauthorized error:
+you will receive an 401 Unauthorized error:
 
     {"statusCode":401,"message":"Unauthorized"}
 
@@ -40,13 +40,13 @@ Requests for access to documents with valid user credentials are granted:
 
 ## Authorization
 
-If we want to go beyond simple authentication-based access controls, we must implement a richer authorization scheme.
+To add more flexible access controls, we must implement a richer authorization scheme.
 
-To do so, we'll first update our authentication scheme to be more permissive. It will attempt to validate the supplied
+We'll first update our authentication scheme to be more permissive. It will attempt to validate the supplied
 credentials and resolve the appropriate user data for use later in the request. If credentials are not supplied or they
 are invalid, the user remains a "guest", but is still allowed access to all of the paths under `/document`.
 
-We will allow oso and the rules defined in our polar documents to determine access to actions and resources based on user
+We will allow oso and the rules defined in our polar files to determine access to actions and resources based on user
 attributes the authentication scheme placed into the request. 
 
 ### Switch Implementation of Authentication Guard
