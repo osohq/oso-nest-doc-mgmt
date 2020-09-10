@@ -57,7 +57,7 @@ In [DocumentController](./src/document/document.controller.ts), replace `LocalRe
     @UseGuards(OsoInstance)
     @UseGuards(LocalResolvingAuthGuard)
     @Controller('document')
-    export class DocumentController {
+    export class DocumentController { ... }
 
 ### Read Access is Now Authorized for Users *and* Guests
 
