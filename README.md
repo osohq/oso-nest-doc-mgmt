@@ -54,12 +54,10 @@ attributes the authentication scheme placed into the request.
 In [DocumentController](./src/document/document.controller.ts), replace `LocalRejectingAuthGuard` with 
 `LocalResolvingAuthGuard` in the `@UseGuards` decorator:
 
-<pre><code>
     @UseGuards(OsoInstance)
     @UseGuards(LocalResolvingAuthGuard)
     @Controller('document')
     export class DocumentController {
-</pre></code>
 
 ### Read Access is Now Authorized for Users *and* Guests
 
