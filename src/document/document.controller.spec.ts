@@ -1,6 +1,8 @@
 jest.mock('./document.service');
+import { UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
+import { doc } from 'prettier';
 import { OsoInstance } from '../oso/oso-instance';
 import { OsoGuard } from '../oso/oso.guard';
 import { OsoModule } from '../oso/oso.module';
@@ -72,22 +74,52 @@ describe('Document Controller', () => {
     expect(expectedReturnValue).toEqual(empty);
   });
 
-  it('should find all documents', async () => {
+  it('should find and validate access to all documents', async () => {
     const expectedDocuments: Document[] = [
       new Document(100, 100, 'First document', false, false),
       new Document(100, 100, 'Second document', false, false)
     ];
+    const authorize = jest.fn();
     const mockFindAll = jest.spyOn(service, 'findAll');
-    mockFindAll.mockReturnValueOnce(Promise.resolve(expectedDocuments));
+    mockFindAll.mockReturnValue(Promise.resolve(expectedDocuments));
 
     // call the function under test
-    const actualDocuments: DocumentSetDto = await controller.findAll();
+    const actualDocuments: DocumentSetDto = await controller.findAll(authorize);
 
     // expect service.findAll to have been called
     expect(mockFindAll).toHaveBeenCalledTimes(1);
     // TODO: Add authorize() and test for call: https://github.com/oletizi/oso-nest-demo/issues/13
+    // expect authorize() function to have been called on each document
+    expect(authorize).toHaveBeenCalledTimes(expectedDocuments.length);
+    expectedDocuments.map((document) => expect(authorize).toHaveBeenCalledWith(document));
 
+    // expect the return value to equal an appropriate document set
     expect(actualDocuments).toEqual(new DocumentSetDto(expectedDocuments));
+  });
+
+  it('should find all documents and filter access to unauthorized documents', async () => {
+    const allDocuments: Document[] = [
+      new Document(1, 1, 'some content', true, true),
+      new Document(2, 2, 'some other content', true, true)
+    ];
+    const mockFindAll = jest.spyOn(service, 'findAll');
+    const mockAuthorize = jest.fn();
+
+    mockFindAll.mockReturnValue(Promise.resolve(allDocuments));
+    mockAuthorize.mockImplementation((document) => {
+      if (document.id === 1) {
+        throw new UnauthorizedException();
+      }
+    });
+
+    // call method under test
+    const actualDocuments = await controller.findAll(mockAuthorize);
+
+    // ensure all documents were checked for authorization
+    allDocuments.map((document) => expect(mockAuthorize).toHaveBeenCalledWith(document));
+
+    // ensure the unauthorized documents were filtered
+    expect(actualDocuments.documents.length).toEqual(allDocuments.length - 1);
   });
 
   it('should create a document', async () => {

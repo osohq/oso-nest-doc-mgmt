@@ -34,6 +34,7 @@ export class OsoInstance extends Oso implements CanActivate {
     });
   }
 
+  // TODO: Add check for rejected promise in initialization
   async initialized() {
     await this.init;
   }
