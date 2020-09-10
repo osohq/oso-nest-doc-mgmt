@@ -22,7 +22,7 @@ the toy authentication mechanism (i.e.&mdash;do not use in production!) that val
 supplied in the request body against a static set of users.
 
 The [DocumentController](./src/document/document.controller.ts) uses the [LocalRejectingAuthGuard](src/auth/local-auth.guard.ts)
-via the `@UseGuards(LocalAuthGuard)` decorator to protect paths that should only be accessible to authenticated users.
+via the `@UseGuards(LocalRejectingAuthGuard)` decorator to protect paths that should only be accessible to authenticated users.
 
 If you try to get documents with invalid user credentials:
 
