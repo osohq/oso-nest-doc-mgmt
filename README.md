@@ -49,7 +49,7 @@ are invalid, the user remains a "guest", but is still allowed access to all of t
 We will allow oso and the rules defined in our polar documents to determine access to actions and resources based on user
 attributes the authentication scheme placed into the request. 
 
-### Switch Authentication Guard implementations
+### Switch Implementation of Authentication Guard
 
 In [DocumentController](./src/document/document.controller.ts), replace `LocalRejectingAuthGuard` with 
 `LocalResolvingAuthGuard` in the `@UseGuards` decorator:
