@@ -6,9 +6,10 @@ import { CreateDocumentDto, DocumentSetDto } from './dto/document.dto';
 import { DocumentService } from './document.service';
 import { Action, Authorize, OsoGuard, Resource } from '../oso/oso.guard';
 
+//@UseGuards(LocalRejectingAuthGuard)
+
 @UseGuards(OsoInstance)
-//@UseGuards(LocalResolvingAuthGuard)
-@UseGuards(LocalRejectingAuthGuard)
+@UseGuards(LocalResolvingAuthGuard)
 @Controller('document')
 export class DocumentController {
 
