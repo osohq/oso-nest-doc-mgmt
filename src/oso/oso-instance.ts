@@ -39,6 +39,14 @@ export class OsoInstance extends Oso implements CanActivate {
     await this.init;
   }
 
+  isAllowed(actor: unknown, action: unknown, resource: unknown): Promise<boolean> {
+    const isAllowed = super.isAllowed(actor, action, resource);
+    isAllowed.then(
+      (answer) => this.logger.info('isAllowed(): actor: ', actor, '; action: ', action, '; resource: ', resource, '; isAlloweed: ', answer)
+    );
+    return isAllowed;
+  }
+
   canActivate(context: ExecutionContext): boolean {
     context.switchToHttp().getRequest().oso = this;
     return true;

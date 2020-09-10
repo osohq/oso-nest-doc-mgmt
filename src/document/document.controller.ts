@@ -1,12 +1,14 @@
 import { Controller, Param, Get, UseGuards, Post, Body } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { getLogger } from 'log4js';
+import { LocalAuthGuard } from '../auth/local-auth.guard';
 import { OsoInstance } from '../oso/oso-instance';
 import { CreateDocumentDto, DocumentSetDto } from './dto/document.dto';
 import { DocumentService } from './document.service';
-import { Action, Authorize } from '../oso/oso.guard';
+import { Action, Authorize, OsoGuard, Resource } from '../oso/oso.guard';
 
 @UseGuards(OsoInstance)
-//@UseGuards(LocalAuthGuard)
+@UseGuards(LocalAuthGuard)
 @Controller('document')
 export class DocumentController {
 
@@ -22,7 +24,6 @@ export class DocumentController {
     return document ? document.document : undefined;
   }
 
-  @Action('read')
   @Get()
   async findAll(@Authorize('read') authorize: any): Promise<DocumentSetDto> {
     return new DocumentSetDto((await this.documentService.findAll()).filter((document) => {
@@ -35,7 +36,9 @@ export class DocumentController {
     }));
   }
 
+  @UseGuards(OsoGuard)
   @Action('create')
+  @Resource('Document')
   @Post('create')
   async create(@Body() document: CreateDocumentDto): Promise<number> {
     return this.documentService.create(document);
