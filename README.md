@@ -128,7 +128,7 @@ _TODO:_
 #### Decorators
 
 The decorators on [DocumentController.create()](./src/document/document.controller.ts) set the `actor`, `action`, and
-`resource` used by the `allow` declaration:
+`resource` used by the `allow` declaration and pass them to the oso library for evaluation:
 
       @UseGuards(OsoGuard)
       @Action('create')
