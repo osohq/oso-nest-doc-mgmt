@@ -33,7 +33,7 @@ you should receive an 401 Unauthorized error:
 
     {"statusCode":401,"message":"Unauthorized"}
 
-If you try to get documents with valid user credentials, you will be granted access:
+Requests for access to documents with valid user credentials are granted:
     
     curl -X GET http://localhost:3000/document/ -d '{"username": "john", "password": "changeme"}' -H "Content-Type: applicationjson"
     curl -X GET http://localhost:3000/document/1 -d '{"username": "john", "password": "changeme"}' -H "Content-Type: application/json"
@@ -61,18 +61,18 @@ In [DocumentController](./src/document/document.controller.ts), replace `LocalRe
 
 ### Read Access is Now Authorized for Users *and* Guests
 
-After nest has recompiled the code and restarted itself, _unauthenticated_ access won't be blocked. Instead, the
+After nest has recompiled code and restarted itself, _unauthenticated_ access won't be blocked. Instead, the
 [`OsoInstance`](./src/oso/oso-instance.ts) and [`OsoGuard`](./src/oso/oso.guard.ts) will determine what is authorized 
 based on the rules in [root.polar](./src/oso/root.polar) and [policy.polar](./src/oso/policy.polar). 
 
-Access to the following URLs without valid credentials will be allowed:
+Access to the following URLs without valid credentials *is* allowed:
 
     curl http://localhost:3000/document
     curl http://localhost:3000/document/1
 
 ### Write Access is Unauthorized for Guests
 
-Access to creating a new document will be denied unless the user presents valid credentials. A POST to 
+Access to creating a new document is denied unless the user presents valid credentials. A POST to 
 `/document/create` without valid credentials:
 
     curl -X POST http://localhost:3000/document/create
@@ -81,7 +81,7 @@ will yield a 403 response:
 
     {"statusCode":403,"message":"Forbidden resource","error":"Forbidden"}
 
-However, access to creating a new document will be allowed if the user *does* present valid credentials:
+However, access to creating a new document is allowed if the user *does* present valid credentials:
 
     curl -X POST -H "Content-Type: application/json" http://localhost:3000/document/create -d '{ "username": "john", "password": "changeme", "document": "I am a nice new document", "allowsDocumentComment": true, "allowsInlineComment": true }'   
 
