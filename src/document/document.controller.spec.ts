@@ -127,13 +127,17 @@ describe('Document Controller', () => {
     const mockCreate = jest.spyOn(service, 'create');
     mockCreate.mockReturnValueOnce(Promise.resolve(expectedId));
     const doc = new CreateDocumentDto();
-    doc.baseId = 100;
     doc.document = 'new document';
     doc.allowsDocumentComment = true;
     doc.allowsInlineComment = true;
-    const id: number = await controller.create(doc);
+    const request = {
+      user: {id: 1}
+    };
+    const id: number = await controller.create(request, doc);
     // DocumentService.create() should have been called with the document DTO
     expect(mockCreate).toHaveBeenCalledWith(doc);
+    // it should have populated the baseId of the document with user.id
+    expect(doc.baseId).toEqual(request.user.id);
     expect(id).toEqual(expectedId);
   });
 });

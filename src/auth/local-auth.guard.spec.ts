@@ -51,9 +51,9 @@ describe(LocalResolvingAuthGuard.name, () => {
     expect(returnValue).toBeTruthy();
   });
 
-  it('should not hide errors.', async () => {
+  it('should return true from canActivate even if there is an exception validating the user.', async () => {
     const err = new Error('Some Error');
     mockValidate.mockReturnValueOnce(Promise.reject(err));
-    await expect(guard.canActivate(executionContext)).rejects.toEqual(err);
+    await expect(guard.canActivate(executionContext)).resolves.toEqual(true);
   });
 }); 

@@ -1,3 +1,4 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Guest } from '../users/entity/guest';
 import { User } from '../users/entity/user';
@@ -44,11 +45,6 @@ describe('AuthService', () => {
 
     // test invalid user case
     user.password = 'not the supplied password';
-    const guest = await service.validateUser(suppliedUsername, suppliedPassword);
-    expect(guest).not.toEqual(user);
-    // ensure the Guest constructor to have been called.
-    expect(Guest).toHaveBeenCalledTimes(1);
-    // XXX: This is less than ideal. Would be better to match a specific object
-    expect(guest).toEqual(new Guest());
+    await expect(service.validateUser(suppliedUsername, suppliedPassword)).rejects.toEqual(new UnauthorizedException());
   });
 });

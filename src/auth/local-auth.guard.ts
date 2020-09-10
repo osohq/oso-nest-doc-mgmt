@@ -43,10 +43,7 @@ export class LocalResolvingAuthGuard extends AuthGuard('local') {
         this.logger.info('validated user: ', user);
         return true;
       })
-      .catch (() => {
-        this.logger.info('invalid credentials. Adding guest to request.');
-        context.switchToHttp().getRequest().user = new Guest();
-        return true;
-      });
+      // Unauthenticated users are still allowed the resource; but request.user remains Guest
+      .catch(() => true);
   }
 }
