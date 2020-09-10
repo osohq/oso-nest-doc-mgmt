@@ -48,7 +48,10 @@ export class OsoGuard implements CanActivate {
     const resource =
       this.reflector.get<string[]>('resource', context.getHandler()) ||
       context.getClass().name;
-    logger.info(`Checking to see if actor is authorized: actor: ${actor}, action: ${action}, resource: ${resource}`);
+    logger.info('Checking to see if actor is authorized: actor: ', actor, '; action:',  action, '; resource: ', resource);
+    this.oso.isAllowed(actor, action, resource)
+      .then(() => console.log(actor, ' is allowed action: ', action, ' resource: ', resource))
+      .catch((err) => {console.log('nope. not allowed', err);});
     return this.oso.isAllowed(actor, action, resource);
   }
 }

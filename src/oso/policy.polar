@@ -28,6 +28,9 @@ allow(user: User, "addInlineComment", document: Document) if
 allow(user: User, "edit", document: Document) if
     role(user, "member", document);
 
+# allow all authenticated users to create
+allow(_user: User, "create", "Document");
+
 ### Admin-specific permissions
 
 allow(user: User, "edit", base: Base) if
