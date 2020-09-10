@@ -92,3 +92,54 @@ document:
 
     curl http://localhost:3000/document
 
+### How It Works
+
+#### Roles
+
+The following role declarations in [root.polar](./src/oso/root.polar) declare that all Users and Guests have (at least) 
+the "guest" role:
+ 
+    # All users who aren't members of a document have "guest" role
+    role(_user: User, "guest", _document: Document);
+    
+    # The "Guest" actor has "guest" role
+    role(_guest: Guest, "guest", _document: Document);
+    
+#### Rules
+
+The following rule in [policy.polar](./src/oso/policy.polar) authorizes an authenticated user to create documents: 
+
+    # allow all authenticated users to create
+    allow(_user: User, "create", "Document");
+    
+### Oso, OsoInstance, and OsoGuard
+_TODO:_
+* introduce OsoInstance and its relationship to Oso
+* Show the initialization of the OsoInstance
+* introduce OsoGuard & its use of the metadata context
+
+#### Decorators
+
+The decorators on [DocumentController.create()](./src/document/document.controller.ts) set the `actor`, `action`, and
+`resource` used by the `allow` declaration:
+
+      @UseGuards(OsoGuard)
+      @Action('create')
+      @Resource('Document')
+      @Post('create')
+      async create(@Request() request, @Body() document: CreateDocumentDto): Promise<number> {
+        document.baseId = request.user.id;
+        return this.documentService.create(document);
+      }
+
+* The `@Action('create')` decorator sets the action to 'create' in the metadata context
+* The `@Resource('Document')` decorator sets the resource to 'Document' in the metadata context
+* The `@UseGuards(OsoGuard)` decorator retrieves the `user` object from the request context and resolves the `action` 
+  and `resource` from the metadata context supplied by the @Action and @Resource decorators and passes them to
+  `Oso.isAllowed()` which evaluates the actor, action, and resource against the polar rules to determine authorization.
+  
+#### Testing
+
+_TODO:_
+* Show how to test the rules by themselves
+* Show how to implement end-to-end testing to ensure all the wiring is set up properly
