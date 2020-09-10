@@ -116,7 +116,7 @@ document:
 
 This rule authorizes only _authenticated_ users to create documents: 
 
-    # allow all authenticated users to create
+    # allow only authenticated users to create
     allow(_user: User, "create", "Document");
     
 ### Oso, OsoInstance, and OsoGuard
