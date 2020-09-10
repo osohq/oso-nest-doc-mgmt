@@ -1,7 +1,7 @@
 import { Controller, Get} from '@nestjs/common';
 import { AppService } from './app.service';
 import { UseGuards } from '@nestjs/common';
-import { OsoGuard, Action, Resource } from './oso/oso.guard';
+import { OsoGuard} from './oso/oso.guard';
 
 @Controller()
 @UseGuards(OsoGuard)

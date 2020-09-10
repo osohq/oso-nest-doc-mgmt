@@ -1,14 +1,17 @@
 import { Controller, Param, Get, UseGuards, Post, Body } from '@nestjs/common';
+import { getLogger } from 'log4js';
 import { OsoInstance } from '../oso/oso-instance';
 import { CreateDocumentDto, DocumentSetDto } from './dto/document.dto';
 import { DocumentService } from './document.service';
 import { Action, Authorize } from '../oso/oso.guard';
-import { LocalAuthGuard } from '../auth/local-auth.guard';
 
 @UseGuards(OsoInstance)
 //@UseGuards(LocalAuthGuard)
 @Controller('document')
 export class DocumentController {
+
+  private readonly logger = getLogger(DocumentController.name);
+
   constructor(private readonly documentService: DocumentService) {
   }
 
@@ -21,8 +24,15 @@ export class DocumentController {
 
   @Action('read')
   @Get()
-  async findAll(): Promise<DocumentSetDto> {
-    return new DocumentSetDto(await this.documentService.findAll());
+  async findAll(@Authorize('read') authorize: any): Promise<DocumentSetDto> {
+    return new DocumentSetDto((await this.documentService.findAll()).filter((document) => {
+      try {
+        authorize(document);
+        return document;
+      } catch (e) {
+        this.logger.info('Unauthorized document access: ', e);
+      }
+    }));
   }
 
   @Action('create')
