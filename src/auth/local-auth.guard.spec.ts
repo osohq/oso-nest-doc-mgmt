@@ -3,12 +3,12 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mock, mockDeep } from 'jest-mock-extended';
 import { Actor } from '../users/entity/actor';
-import { LocalAuthGuard } from './local-auth.guard';
+import { LocalResolvingAuthGuard } from './local-auth.guard';
 import { LocalStrategy } from './local.strategy';
 
-describe(LocalAuthGuard.name, () => {
+describe(LocalResolvingAuthGuard.name, () => {
 
-  let guard: LocalAuthGuard;
+  let guard: LocalResolvingAuthGuard;
   let strategy: LocalStrategy;
   let executionContext: ExecutionContext;
   let mockRequest;
@@ -29,7 +29,7 @@ describe(LocalAuthGuard.name, () => {
 
     strategy = mock<LocalStrategy>();
     mockValidate = jest.spyOn(strategy, 'validate');
-    guard = new LocalAuthGuard(strategy);
+    guard = new LocalResolvingAuthGuard(strategy);
   });
 
   afterEach(() => {

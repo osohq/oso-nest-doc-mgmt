@@ -1,26 +1,51 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
+import { Actor } from '../users/entity/actor';
+import { Guest } from '../users/entity/guest';
 import { LocalStrategy } from './local.strategy';
 import { getLogger } from 'log4js';
 
-@Injectable()
-export class LocalAuthGuard extends AuthGuard('local') {
-  private readonly logger = getLogger(LocalAuthGuard.name);
+function resolveCredentials(context: ExecutionContext) {
+  const request = context.switchToHttp().getRequest();
+  return request.body;
+}
 
-  constructor(private myStrategy: LocalStrategy) {
+@Injectable()
+export class LocalRejectingAuthGuard extends AuthGuard('local') {
+  constructor(private myStrategy: LocalStrategy){
     super();
-    //this.logger.info('')
   }
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const body = request.body;
-    this.logger.info('validating user...');
-    return this.myStrategy.validate(body.username, body.password)
+    const credentials = resolveCredentials(context);
+    return this.myStrategy.validate(credentials.username, credentials.password)
+      .then((actor: Actor) => {
+        return actor !== new Guest();
+      });
+  }
+}
+
+@Injectable()
+export class LocalResolvingAuthGuard extends AuthGuard('local') {
+  private readonly logger = getLogger(LocalResolvingAuthGuard.name);
+
+  constructor(private myStrategy: LocalStrategy) {
+    super();
+  }
+
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    const credentials = resolveCredentials(context);
+    this.logger.info('validating credentials...');
+    return this.myStrategy.validate(credentials.username, credentials.password)
       .then((user) => {
-        request.user = user;
+        context.switchToHttp().getRequest().user = user;
         this.logger.info('validated user: ', user);
+        return true;
+      })
+      .catch (() => {
+        this.logger.info('invalid credentials. Adding guest to request.');
+        context.switchToHttp().getRequest().user = new Guest();
         return true;
       });
   }

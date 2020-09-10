@@ -1,13 +1,14 @@
 import { Controller, Param, Get, UseGuards, Post, Body, Request } from '@nestjs/common';
 import { getLogger } from 'log4js';
-import { LocalAuthGuard } from '../auth/local-auth.guard';
+import { LocalRejectingAuthGuard, LocalResolvingAuthGuard } from '../auth/local-auth.guard';
 import { OsoInstance } from '../oso/oso-instance';
 import { CreateDocumentDto, DocumentSetDto } from './dto/document.dto';
 import { DocumentService } from './document.service';
 import { Action, Authorize, OsoGuard, Resource } from '../oso/oso.guard';
 
 @UseGuards(OsoInstance)
-@UseGuards(LocalAuthGuard)
+//@UseGuards(LocalResolvingAuthGuard)
+@UseGuards(LocalRejectingAuthGuard)
 @Controller('document')
 export class DocumentController {
 
