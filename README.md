@@ -105,7 +105,16 @@ the "guest" role:
     
 #### Rules
 
-The following rule in [policy.polar](./src/oso/policy.polar) authorizes only _authenticated_ users to create documents: 
+The following rule in [policy.polar](.src/oso/policy.polar) authorizes all actors who have a "guest" role to read any
+document:
+
+    allow(user: Guest, "read", document: Document) if
+        role(user, "guest", document);
+    
+    allow(user: User, "read", document:Document) if
+        role(user, "guest", document);
+
+This rule authorizes only _authenticated_ users to create documents: 
 
     # allow all authenticated users to create
     allow(_user: User, "create", "Document");
