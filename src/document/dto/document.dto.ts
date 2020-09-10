@@ -3,7 +3,6 @@ import { IsBoolean, IsInt, IsNotEmpty } from 'class-validator';
 
 export class CreateDocumentDto {
 
-  @IsInt()
   public baseId: number;
 
   @IsNotEmpty()
