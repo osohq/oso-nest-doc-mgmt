@@ -1,5 +1,4 @@
-import { Controller, Param, Get, UseGuards, Post, Body } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Param, Get, UseGuards, Post, Body, Request } from '@nestjs/common';
 import { getLogger } from 'log4js';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
 import { OsoInstance } from '../oso/oso-instance';
@@ -40,7 +39,8 @@ export class DocumentController {
   @Action('create')
   @Resource('Document')
   @Post('create')
-  async create(@Body() document: CreateDocumentDto): Promise<number> {
+  async create(@Request() request, @Body() document: CreateDocumentDto): Promise<number> {
+    document.baseId = request.user.id;
     return this.documentService.create(document);
   }
 }
