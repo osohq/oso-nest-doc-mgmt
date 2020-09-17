@@ -23,19 +23,23 @@ role(user: User, role, document: Document) if
 
 ## Role inheritance. Owner > Admin > Member > Guest
 
+# User is an admin of a Base if they are the owner of that Base
 role(user: User, "admin", base: Base) if
     role(user, "owner", base);
 
+# User is a member of a Base if they are an admin of the base (transitively, all owners are members)
 role(user: User, "member", base: Base) if
     role(user, "admin", base);
 
+# User is an admin of a Document if they are an owner of that Document
 role(user: User, "admin", document: Document) if
     role(user, "owner", document);
 
+# User is a member of a Document if they are an admin of that Document
 role(user: User, "member", document: Document) if
     role(user, "admin", document);
 
-# All users who aren't members of a document have "guest" role
+# All users are a guest of all Documents
 role(_user: User, "guest", _document: Document);
 
 # The "Guest" actor has "guest" role
@@ -57,7 +61,6 @@ allow(user, action, document: Document) if
         "editTasks",
     ] and allow(user, "edit", document);
 
-
 # "Edit bases"
 allow(user, action, base: Base) if
     action in [
@@ -67,7 +70,6 @@ allow(user, action, base: Base) if
     ] and allow(user, "edit", base);
 
 # Administer entities
-
 allow(user, action, document: Document) if
     action in [
         "changeMemberPermissionLevel",
