@@ -13,13 +13,17 @@ export class DocumentService {
   private readonly comments: Comment[];
 
   constructor(private readonly usersService: UsersService, private readonly projectService: ProjectService) {
+    // Create some initial data for demo purposes
     const maria = usersService.findOne('maria');
     const john = usersService.findOne('john');
-    const defaultProject = projectService.findOne(projectService.create(maria.id));
+    const project = projectService.findOne(projectService.create(maria.id));
+    // Add maria and john as demo project members; leave chris not a member of the demo project.
+    projectService.addMember(project.id, maria.id);
+    projectService.addMember(project.id, john.id);
 
     this.entities = [
-      new Document(this.nextSequence(), maria, defaultProject, 'Hello, World!', false, false),
-      new Document(this.nextSequence(), john, defaultProject, 'Goodbye, Moon!', false, false)
+      new Document(this.nextSequence(), maria, project, 'Hello, World!', false, false),
+      new Document(this.nextSequence(), john, project, 'Goodbye, Moon!', false, false)
     ];
     this.comments = [];
   }
