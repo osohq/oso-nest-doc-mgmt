@@ -1,10 +1,12 @@
-import { Base } from '../../base/base.service';
+import { Project } from '../../project/project.service';
+import { User } from '../../users/entity/user';
 
 export class Document {
-  constructor(public id: number, public baseId: number, public document: string, public allowsDocumentComment: boolean, public allowsInlineComment: boolean) {
-  }
-
-  async base(): Promise<Base> {
-    return new Base(this.baseId);
+  constructor(public readonly id: number,
+              public readonly owner: User,
+              public readonly project: Project,
+              public readonly document: string,
+              public readonly allowsDocumentComment: boolean,
+              public readonly allowsInlineComment: boolean) {
   }
 }

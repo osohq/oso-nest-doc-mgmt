@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { getLogger } from 'log4js';
 import { Oso } from 'oso';
-import { Base } from '../base/base.service';
+import { Project } from '../project/project.service';
 import { Document } from '../document/entity/document';
 import { Actor } from '../users/entity/actor';
 import { Guest } from '../users/entity/guest';
@@ -25,7 +25,7 @@ export class OsoInstance extends Oso implements CanActivate {
       this.registerClass(Guest);
       this.registerClass(Actor);
       this.registerClass(Document);
-      this.registerClass(Base);
+      this.registerClass(Project);
       this.registerConstant('console', console);
 
       Promise.all(POLAR_FILES.map(file => this.loadFile(file)))

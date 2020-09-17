@@ -1,9 +1,13 @@
-import {Document} from '../entity/document';
-import { IsBoolean, IsInt, IsNotEmpty } from 'class-validator';
+import { Document } from '../entity/document';
+import { IsBoolean, IsInt, IsNotEmpty} from 'class-validator';
 
 export class CreateDocumentDto {
 
-  public baseId: number;
+  @IsInt()
+  public projectId: number;
+
+  @IsInt()
+  public ownerId: number;
 
   @IsNotEmpty()
   public document: string;
@@ -31,6 +35,7 @@ export class FindDocumentDto {
 
 export class DocumentSetDto {
   public readonly documents: FindDocumentDto[]
+
   constructor(documents: Document[]) {
     this.documents = documents.map((document: Document) => new FindDocumentDto(document));
   }

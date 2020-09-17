@@ -12,24 +12,24 @@ allow(_user, "getHello", "AppController");
 ### Roles from ownership
 
 # User gets owner role from ownerId attribute
-role(user: User, "owner", base: Base) if
-    base.ownerId = user.id;
+role(user: User, "owner", project: Project) if
+    project.ownerId = user.id;
 
-# # Document roles from base roles
+# # Document roles from project roles
 # User has a role for an document if they have the same
-# role for the base
+# role for the project
 role(user: User, role, document: Document) if
-    role(user, role, document.base());
+    role(user, role, document.project);
 
 ## Role inheritance. Owner > Admin > Member > Guest
 
-# User is an admin of a Base if they are the owner of that Base
-role(user: User, "admin", base: Base) if
-    role(user, "owner", base);
+# User is an admin of a Project if they are the owner of that Project
+role(user: User, "admin", project: Project) if
+    role(user, "owner", project);
 
-# User is a member of a Base if they are an admin of the base (transitively, all owners are members)
-role(user: User, "member", base: Base) if
-    role(user, "admin", base);
+# User is a member of a Project if they are an admin of the project (transitively, all owners are members)
+role(user: User, "member", project: Project) if
+    role(user, "admin", project);
 
 # User is an admin of a Document if they are an owner of that Document
 role(user: User, "admin", document: Document) if
@@ -61,19 +61,19 @@ allow(user, action, document: Document) if
         "editTasks",
     ] and allow(user, "edit", document);
 
-# "Edit bases"
-allow(user, action, base: Base) if
+# "Edit projects"
+allow(user, action, project: Project) if
     action in [
         "rename",
         "changeMembers",
         "changeMemberLevel",
-    ] and allow(user, "edit", base);
+    ] and allow(user, "edit", project);
 
 # Administer entities
 allow(user, action, document: Document) if
     action in [
         "changeMemberPermissionLevel",
         "deleteReplies",
-        "changeBase",
+        "changeProject",
         "deleteNotes"
     ] and allow(user, "edit", document);
