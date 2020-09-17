@@ -1,3 +1,4 @@
+import { Set } from 'immutable';
 import { Injectable } from '@nestjs/common';
 import { User } from './entity/user';
 
@@ -17,7 +18,11 @@ export class UsersService {
     return this.users.find(user => user.username === username);
   }
 
-  findById(id: number) : User | undefined {
+  findAll(): Set<User> {
+    return Set(this.users);
+  }
+
+  findById(id: number): User | undefined {
     return this.users.find(user => user.id === id);
   }
 }
