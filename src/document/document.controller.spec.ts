@@ -10,6 +10,9 @@ import { DocumentController } from './document.controller';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto, DocumentSetDto, FindDocumentDto } from './dto/document.dto';
 import { Document } from './entity/document';
+import { mock } from 'jest-mock-extended';
+import { User } from 'src/users/entity/user';
+import { Project } from 'src/project/project.service';
 
 describe('Document Controller', () => {
   let service: DocumentService;
@@ -36,7 +39,9 @@ describe('Document Controller', () => {
 
   it('should find a document by id', async () => {
     // prepare the return promise from DocumentService.findOne()
-    const expectedDocument: Document = new Document(100, 100, 'The  document', false, false);
+    const expectedOwner = mock<User>();
+    const expectedProject = mock<Project>();
+    const expectedDocument: Document = new Document(100, expectedOwner, expectedProject, 'The  document', false, false);
     // mock Oso's authorize function
     const mockAuthorize = jest.fn();
 
@@ -75,9 +80,11 @@ describe('Document Controller', () => {
   });
 
   it('should find and validate access to all documents', async () => {
+    const expectedProject: Project = mock<Project>();
+    const expectedOwner: User = mock<User>();
     const expectedDocuments: Document[] = [
-      new Document(100, 100, 'First document', false, false),
-      new Document(100, 100, 'Second document', false, false)
+      new Document(100, expectedOwner, expectedProject, 'First document', false, false),
+      new Document(100, expectedOwner, expectedProject, 'Second document', false, false)
     ];
     const authorize = jest.fn();
     const mockFindAll = jest.spyOn(service, 'findAll');
@@ -98,9 +105,11 @@ describe('Document Controller', () => {
   });
 
   it('should find all documents and filter access to unauthorized documents', async () => {
+    const expectedUser: User = mock<User>();
+    const expectedProject: Project = mock<Project>();
     const allDocuments: Document[] = [
-      new Document(1, 1, 'some content', true, true),
-      new Document(2, 2, 'some other content', true, true)
+      new Document(1, expectedUser, expectedProject, 'some content', true, true),
+      new Document(2, expectedUser, expectedProject, 'some other content', true, true)
     ];
     const mockFindAll = jest.spyOn(service, 'findAll');
     const mockAuthorize = jest.fn();
@@ -137,7 +146,7 @@ describe('Document Controller', () => {
     // DocumentService.create() should have been called with the document DTO
     expect(mockCreate).toHaveBeenCalledWith(doc);
     // it should have populated the baseId of the document with user.id
-    expect(doc.baseId).toEqual(request.user.id);
+    expect(doc.projectId).toEqual(request.user.id);
     expect(id).toEqual(expectedId);
   });
 });

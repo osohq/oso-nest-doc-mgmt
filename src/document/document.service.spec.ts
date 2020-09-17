@@ -1,19 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OsoInstance } from '../oso/oso-instance';
+import { ProjectModule } from '../project/project.module';
+import { ProjectService } from '../project/project.service';
+import { UsersModule } from '../users/users.module';
+import { UsersService } from '../users/users.service';
+import { DocumentModule } from './document.module';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/document.dto';
 import { Document } from './entity/document';
 import { Comment } from './entity/comment';
 
-describe('DocumentService', () => {
+describe(DocumentService.name, () => {
   let service: DocumentService;
+  let projectService: ProjectService;
+  let userService: UsersService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports:[DocumentModule, UsersModule, ProjectModule],
       providers: [DocumentService, OsoInstance],
     }).compile();
 
     service = module.get<DocumentService>(DocumentService);
+    projectService = module.get<ProjectService>(ProjectService);
+    userService = module.get<UsersService>(UsersService);
   });
 
   it('should be defined', () => {
@@ -42,10 +52,12 @@ describe('DocumentService', () => {
   });
 
   it('should be able to create a new document', async () => {
-    const baseId = 100;
+    const ownerId = 1;
+    const projectId = 1;
     const data = 'a nice new document';
     const createDocument = new CreateDocumentDto();
-    createDocument.baseId = baseId;
+    createDocument.ownerId = ownerId;
+    createDocument.projectId = projectId;
     createDocument.document = data;
     createDocument.allowsDocumentComment = true;
     createDocument.allowsInlineComment = false;
@@ -56,7 +68,8 @@ describe('DocumentService', () => {
     const document: Document = await service.findOne(id);
     expect(document).toBeDefined();
     expect(document.id).toEqual(id);
-    expect(document.baseId).toEqual(baseId);
+    expect(document.project).toBeDefined();
+    expect(document.project.id).toEqual(projectId);
     expect(document.document).toEqual(data);
     expect(document.allowsDocumentComment).toEqual(createDocument.allowsDocumentComment);
     expect(document.allowsInlineComment).toEqual(createDocument.allowsInlineComment);

@@ -42,7 +42,7 @@ export class DocumentController {
   @Resource('Document')
   @Post('create')
   async create(@Request() request, @Body() document: CreateDocumentDto): Promise<number> {
-    document.baseId = request.user.id;
+    document.projectId = request.user.id;
     return this.documentService.create(document);
   }
 }

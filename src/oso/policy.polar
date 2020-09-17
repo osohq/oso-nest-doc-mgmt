@@ -33,13 +33,13 @@ allow(_user: User, "create", "Document");
 
 ### Admin-specific permissions
 
-allow(user: User, "edit", base: Base) if
-    role(user, "admin", base);
+allow(user: User, "edit", project: Project) if
+    role(user, "admin", project);
 
 ### Owner permissions
 
-allow(user: User, _, base: Base) if
-    role(user, "owner", base);
+allow(user: User, _, project: Project) if
+    role(user, "owner", project);
 
 allow(user: User, _, document: Document) if
     role(user, "owner", document);

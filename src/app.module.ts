@@ -9,10 +9,10 @@ import { DocumentService } from './document/document.service';
 import { DocumentController } from './document/document.controller';
 import { DocumentModule } from './document/document.module';
 import { OsoModule } from './oso/oso.module';
-import { BaseModule } from './base/base.module';
+import { ProjectModule } from './project/project.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, DocumentModule, OsoModule, BaseModule],
+  imports: [AuthModule, UsersModule, DocumentModule, OsoModule, ProjectModule],
   controllers: [AppController, DocumentController],
   providers: [AppService, OsoGuard, OsoInstance, DocumentService],
   exports: [],

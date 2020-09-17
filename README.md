@@ -1,7 +1,14 @@
 ## Introduction
-_TODO:_
-* Statement of purpose
-* Introduction to problem domain
+
+This demo app provides an example implementation of oso authorization in the context of NestJS, a popular
+Node.js progressive framework
+
+The tutorial below examines possible use-cases, including [RBAC](https://docs.osohq.com/using/examples/rbac.html) and 
+[ABAC](https://docs.osohq.com/using/examples/abac.html) with concrete implementations.
+
+The problem domain is a document management system that requires various kinds of access permissions in order to perform
+certain actions documents. Those roles and permissions are described by rules written in Oso's policy language, 
+[Polar](https://docs.osohq.com/using/polar-syntax.html) 
 
 ### Installation
 
