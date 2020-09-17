@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 export class Project {
-  private readonly members: Set<number> = new Set();
+  private members: Set<number> = new Set();
 
   constructor(public readonly id: number, public readonly ownerId: number) {
     this.addMember(ownerId);
@@ -13,6 +13,10 @@ export class Project {
 
   getMembers(): Set<number> {
     return new Set(this.members);
+  }
+
+  isMember(userId: number): boolean {
+    return this.members.has(userId);
   }
 }
 
@@ -35,7 +39,7 @@ export class ProjectService {
     this.findOne(id).addMember(userId);
   }
 
-  findMembers(projectId: number): Set<number> {
-    return this.findOne(projectId).getMembers();
+  findMembers(projectId: number): number[] {
+    return Array.from(this.findOne(projectId).getMembers());
   }
 }

@@ -2,8 +2,7 @@ import { Document } from '../document/entity/document';
 import { User } from '../users/entity/user';
 import { Guest } from '../users/entity/guest';
 import { OsoInstance } from './oso-instance';
-import { Project } from 'src/project/project.service';
-import { mock } from 'jest-mock-extended';
+import { Project } from '../project/project.service';
 
 const {getLogger} = require('log4js');
 const logger = getLogger('oso.rules.spec');
@@ -11,12 +10,13 @@ getLogger().level = 'info';
 
 describe('oso.rules.test', () => {
   let guest: Guest;
-  let john: User, alexandra: User;
+  let john: User, alexandra: User, misha: User;
   let project: Project;
   let allPermissionsDoc: Document, noPermissionsDoc: Document, johnDocOne: Document, johnDocTwo: Document,
     alexandraDocOne: Document;
   let oso: OsoInstance;
   const actions = {
+    edit: 'edit',
     addDocumentComment: 'addDocumentComment',
     addInlineComment: 'addInlineComment'
   };
@@ -24,7 +24,15 @@ describe('oso.rules.test', () => {
     guest = new Guest();
     john = new User(1, 'john', 'pass');
     alexandra = new User(2, 'alexandra', 'pass');
-    project = mock<Project>();
+    misha = new User(3, 'misha', 'pass');
+
+    // create a project owned by alexandra
+    project = new Project(1, alexandra.id);
+    project.addMember(john.id);
+    expect(project.getMembers()).toContain(alexandra.id);
+    expect(project.getMembers()).toContain(john.id);
+    expect(project.getMembers()).not.toContain(misha.id);
+
     allPermissionsDoc = new Document(100, alexandra, project, 'I am a document with all comments allowed', true, true);
     noPermissionsDoc = new Document(101, alexandra, project, 'I am a document with no comments allowed', false, false);
     johnDocOne = new Document(1, john, project, 'I am a document owned by john b/c my baseId is john\'s user id.', false, false);
@@ -77,5 +85,13 @@ describe('oso.rules.test', () => {
 
   it('should NOT allow guests to "addInlineComment" if ! document.allowsInlineComment', async () => {
     expect(await oso.isAllowed(guest, actions.addInlineComment, noPermissionsDoc)).toEqual(false);
+  });
+
+  it('should allow members to edit documents', async () => {
+    expect(await oso.isAllowed(alexandra, actions.edit, alexandraDocOne)).toEqual(true);
+    expect(await oso.isAllowed(john, actions.edit, alexandraDocOne)).toEqual(true);
+  });
+  it('should NOT allow non-members to edit documents', async() => {
+    expect(await oso.isAllowed(misha, actions.edit, alexandraDocOne)).toEqual(false);
   });
 });

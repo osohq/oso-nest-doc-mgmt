@@ -45,6 +45,10 @@ role(_user: User, "guest", _document: Document);
 # The "Guest" actor has "guest" role
 role(_guest: Guest, "guest", _document: Document);
 
+### Roles from membership
+role(user: User, "member", project: Project) if
+  project.isMember(user.id);
+
 ## Permission groupings
 
 # "Edit entities"
