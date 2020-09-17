@@ -26,5 +26,18 @@ describe(ProjectService.name, () => {
     expect(project).toBeDefined();
     expect(project.id).toEqual(projectId);
     expect(project.ownerId).toEqual(ownerId);
+    expect(project.getMembers()).toContain(ownerId);
   });
+
+  it('should be able to add new members to a project', () => {
+    const ownerId = 1;
+    const expectedUserId = 100;
+    const projectId = service.create(1);
+
+    service.addMember(projectId, expectedUserId);
+    const project = service.findOne(projectId);
+    expect(project.getMembers()).toContain(ownerId);
+    expect(project.getMembers()).toContain(expectedUserId);
+  });
+
 });
