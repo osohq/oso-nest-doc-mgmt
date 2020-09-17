@@ -16,6 +16,7 @@ export class DocumentService {
     const maria = usersService.findOne('maria');
     const john = usersService.findOne('john');
     const defaultProject = projectService.findOne(projectService.create(maria.id));
+
     this.entities = [
       new Document(this.nextSequence(), maria, defaultProject, 'Hello, World!', false, false),
       new Document(this.nextSequence(), john, defaultProject, 'Goodbye, Moon!', false, false)

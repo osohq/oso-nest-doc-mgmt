@@ -1,7 +1,9 @@
+import { Set } from 'immutable';
 import { Test, TestingModule } from '@nestjs/testing';
+import { User } from './entity/user';
 import { UsersService } from './users.service';
 
-describe('UsersService', () => {
+describe(UsersService.name, () => {
   let service: UsersService;
 
   beforeEach(async () => {
@@ -21,5 +23,11 @@ describe('UsersService', () => {
     const user = await service.findOne(username);
     expect(user).toBeDefined();
     expect(user.username).toEqual(username);
+  });
+
+  it('should find all users', () => {
+    const users: Set<User> = service.findAll();
+    expect(users).toBeDefined();
+    expect(users.size).toBeGreaterThan(0);
   });
 });
