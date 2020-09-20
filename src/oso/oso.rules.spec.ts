@@ -88,6 +88,12 @@ describe('oso.rules.test', () => {
     expect(await oso.isAllowed(guest, actions.addInlineComment, noPermissionsDoc)).toEqual(false);
   });
 
+  it('should only allow users to edit the resource "Document"', async () => {
+    expect(await oso.isAllowed(alexandra, actions.edit, Document.name)).toEqual(true);
+    expect(await oso.isAllowed(john, actions.edit, Document.name)).toEqual(true);
+    expect(await oso.isAllowed(guest, actions.edit, Document.name)).toEqual(false);
+  });
+
   it('should allow members to edit documents', async () => {
     expect(await oso.isAllowed(alexandra, actions.edit, alexandraDocOne)).toEqual(true);
     expect(await oso.isAllowed(john, actions.edit, alexandraDocOne)).toEqual(true);

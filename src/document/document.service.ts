@@ -5,11 +5,12 @@ import { UsersService } from '../users/users.service';
 import { CreateDocumentDto } from './dto/document.dto';
 import { Document } from './entity/document';
 import { Comment } from './entity/comment';
+import { EditActionDto } from './dto/edit-action.dto';
 
 @Injectable()
 export class DocumentService {
   private sequence = 0
-  private readonly entities: Document[];
+  private readonly documents: Document[];
   private readonly comments: Comment[];
 
   constructor(private readonly usersService: UsersService, private readonly projectService: ProjectService) {
@@ -21,7 +22,7 @@ export class DocumentService {
     projectService.addMember(project.id, maria.id);
     projectService.addMember(project.id, john.id);
 
-    this.entities = [
+    this.documents = [
       new Document(this.nextSequence(), maria, project, 'Hello, World!', false, false),
       new Document(this.nextSequence(), john, project, 'Goodbye, Moon!', false, false)
     ];
@@ -40,7 +41,7 @@ export class DocumentService {
       throw new Error(`No such project: ${document.projectId}`);
     }
 
-    this.entities.push(new Document(id,
+    this.documents.push(new Document(id,
       owner,
       project,
       document.document,
@@ -50,11 +51,18 @@ export class DocumentService {
   }
 
   async findOne(id: number): Promise<Document | undefined> {
-    return this.entities.find(document => document.id === id);
+    return this.documents.find(document => document.id === id);
   }
 
   async findAll(): Promise<Document[]> {
-    return [...this.entities];
+    return [...this.documents];
+  }
+
+  async edit(edit: EditActionDto): Promise<void> {
+    const document: Document = await this.findOne(edit.documentId);
+    if (document) {
+      document.document = edit.document;
+    }
   }
 
   async findCommentsByDocument(documentId: number): Promise<Comment[]> {

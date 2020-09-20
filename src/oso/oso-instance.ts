@@ -10,7 +10,7 @@ import { User } from '../users/entity/user';
 @Injectable()
 export class OsoInstance extends Oso implements CanActivate {
   private readonly logger = getLogger(OsoInstance.name);
-  private readonly init: Promise<void>;
+  private readonly init: Promise<void[]>;
 
   constructor() {
     super();
@@ -29,9 +29,11 @@ export class OsoInstance extends Oso implements CanActivate {
     // TODO: Handle promises
     this.registerClass(Project);
     this.registerConstant('console', console);
-    this.loadFile(`${__dirname}/root.polar`);
-    this.loadFile(`${__dirname}/policy.polar`);
+    this.init = Promise.all(['root.polar', 'policy.polar'].map(file => this.loadFile(`${__dirname}/${file}`)));
+  }
 
+  async initialized() {
+    await this.init;
   }
 
   isAllowed(actor: unknown, action: unknown, resource: unknown): Promise<boolean> {
