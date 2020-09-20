@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 export class Project {
   private members: Set<number> = new Set();
 
-  constructor(public readonly id: number, public readonly ownerId: number) {
+  constructor(public readonly name: string, public readonly id: number, public readonly ownerId: number) {
     this.addMember(ownerId);
   }
 
@@ -25,9 +25,9 @@ export class ProjectService {
   private sequence = 0;
   private readonly projects = {}
 
-  create(ownerId: number) {
+  create(name: string, ownerId: number) {
     const id = ++this.sequence;
-    this.projects[id] = new Project(id, ownerId);
+    this.projects[id] = new Project(name, id, ownerId);
     return id;
   }
 
