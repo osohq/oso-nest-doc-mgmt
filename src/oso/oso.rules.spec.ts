@@ -21,13 +21,14 @@ describe('oso.rules.test', () => {
     addInlineComment: 'addInlineComment'
   };
   beforeEach(async () => {
+    const projectId = 1;
     guest = new Guest();
     john = new User(1, 'john', 'pass');
     alexandra = new User(2, 'alexandra', 'pass');
     misha = new User(3, 'misha', 'pass');
 
     // create a project owned by alexandra
-    project = new Project(1, alexandra.id);
+    project = new Project('A', projectId, alexandra.id);
     project.addMember(john.id);
     expect(project.getMembers()).toContain(alexandra.id);
     expect(project.getMembers()).toContain(john.id);
