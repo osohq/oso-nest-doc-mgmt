@@ -16,7 +16,7 @@ export class DocumentService {
     // Create some initial data for demo purposes
     const maria = usersService.findOne('maria');
     const john = usersService.findOne('john');
-    const project = projectService.findOne(projectService.create(maria.id));
+    const project = projectService.findOne(projectService.create('Maria\'s default project', maria.id));
     // Add maria and john as demo project members; leave chris not a member of the demo project.
     projectService.addMember(project.id, maria.id);
     projectService.addMember(project.id, john.id);

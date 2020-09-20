@@ -28,7 +28,10 @@ export class OsoInstance extends Oso implements CanActivate {
       this.registerClass(Project);
       this.registerConstant('console', console);
 
-      Promise.all(POLAR_FILES.map(file => this.loadFile(file)))
+      Promise.all(POLAR_FILES.map(file => {
+        this.logger.info('Loading file: ', file);
+        return this.loadFile(file);
+      }))
         .then(() => resolve())
         .catch(err => reject(err));
     });

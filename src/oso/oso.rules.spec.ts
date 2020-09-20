@@ -91,6 +91,7 @@ describe('oso.rules.test', () => {
     expect(await oso.isAllowed(alexandra, actions.edit, alexandraDocOne)).toEqual(true);
     expect(await oso.isAllowed(john, actions.edit, alexandraDocOne)).toEqual(true);
   });
+
   it('should NOT allow non-members to edit documents', async() => {
     expect(await oso.isAllowed(misha, actions.edit, alexandraDocOne)).toEqual(false);
   });
