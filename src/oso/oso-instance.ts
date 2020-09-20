@@ -7,11 +7,6 @@ import { Actor } from '../users/entity/actor';
 import { Guest } from '../users/entity/guest';
 import { User } from '../users/entity/user';
 
-const POLAR_FILES: string[] = [
-  `${__dirname}/root.polar`,
-  `${__dirname}/policy.polar`
-];
-
 @Injectable()
 export class OsoInstance extends Oso implements CanActivate {
   private readonly logger = getLogger(OsoInstance.name);
@@ -19,27 +14,24 @@ export class OsoInstance extends Oso implements CanActivate {
 
   constructor() {
     super();
-    this.logger.info('Creating new OsoInstance...');
-    this.init = new Promise((resolve, reject) => {
-      this.registerClass(User);
-      this.registerClass(Guest);
-      this.registerClass(Actor);
-      this.registerClass(Document);
-      this.registerClass(Project);
-      this.registerConstant('console', console);
+    //this.logger.info('Creating new OsoInstance...');
+    //this.logger.info('registering User...');
+    console.log('====>Creating new OsoInstance...');
+    console.log('====> Registering User class...');
+    this.registerClass(User);
+    this.logger.info('registering Guest...');
+    this.registerClass(Guest);
+    this.logger.info('registring Actor...');
+    this.registerClass(Actor);
+    this.logger.info('registering Document...');
+    this.registerClass(Document);
+    this.logger.info('registering Project...');
+    // TODO: Handle promises
+    this.registerClass(Project);
+    this.registerConstant('console', console);
+    this.loadFile(`${__dirname}/root.polar`);
+    this.loadFile(`${__dirname}/policy.polar`);
 
-      Promise.all(POLAR_FILES.map(file => {
-        this.logger.info('Loading file: ', file);
-        return this.loadFile(file);
-      }))
-        .then(() => resolve())
-        .catch(err => reject(err));
-    });
-  }
-
-  // TODO: Add check for rejected promise in initialization
-  async initialized() {
-    await this.init;
   }
 
   isAllowed(actor: unknown, action: unknown, resource: unknown): Promise<boolean> {
