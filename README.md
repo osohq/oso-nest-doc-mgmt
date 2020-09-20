@@ -13,20 +13,20 @@ certain actions documents. Those roles and permissions are described by rules wr
 ### Installation
 
 1. Clone this repository and install dependencies:
-```
-%> git clone https://github.com/oletizi/oso-nest-demo.git && cd oso-nest-demo && yarn install
-```
+    ```
+    %> git clone https://github.com/oletizi/oso-nest-demo.git && cd oso-nest-demo && yarn install
+    ```
     
 1. Start the server:
-```
-%> yarn run start
-```
+    ```
+    %> yarn run start
+    ```
    
 1. Make a test request:
-```
-%> curl http://localhost:3000/
-Hello World!
-```
+    ```
+    %> curl http://localhost:3000/
+    Hello World!
+    ```
 
 ### NestJS and the Demo App
 
