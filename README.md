@@ -24,7 +24,7 @@ certain actions documents. Those roles and permissions are described by rules wr
    
 1. Make a test request:
 ```
-%> curl http://localhost:300/
+%> curl http://localhost:3000/
 Hello World!
 ```
 
