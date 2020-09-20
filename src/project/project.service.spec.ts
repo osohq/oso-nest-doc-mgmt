@@ -18,7 +18,7 @@ describe(ProjectService.name, () => {
 
   it('should be able to create a new project and find it by id', () => {
     const ownerId = 1;
-    const projectId = service.create(1);
+    const projectId = service.create('A', 1);
     expect(projectId).toBeDefined();
     expect(projectId).toBeGreaterThan(0);
 
@@ -32,7 +32,7 @@ describe(ProjectService.name, () => {
   it('should be able to add new members to a project', () => {
     const ownerId = 1;
     const expectedUserId = 100;
-    const projectId = service.create(1);
+    const projectId = service.create('A', 1);
 
     service.addMember(projectId, expectedUserId);
     const project = service.findOne(projectId);
