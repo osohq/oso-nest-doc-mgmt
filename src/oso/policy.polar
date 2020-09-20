@@ -31,6 +31,9 @@ allow(user: User, "edit", document: Document) if
 # allow all authenticated users to create
 allow(_user: User, "create", "Document");
 
+# allow all authenticated users to attempt to edit
+allow(_user: User, "edit", "Document");
+
 ### Admin-specific permissions
 
 allow(user: User, "edit", project: Project) if

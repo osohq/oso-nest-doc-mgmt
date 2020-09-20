@@ -5,7 +5,7 @@ export class Document {
   constructor(public readonly id: number,
               public readonly owner: User,
               public readonly project: Project,
-              public readonly document: string,
+              public document: string,
               public readonly allowsDocumentComment: boolean,
               public readonly allowsInlineComment: boolean) {
   }
