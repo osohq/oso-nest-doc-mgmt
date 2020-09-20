@@ -5,6 +5,6 @@ import { Resource } from './oso/oso.guard';
 export class AppService {
   @Resource('hello_world')
   getHello(): string {
-    return 'Hello World!';
+    return 'Hello World!\n';
   }
 }

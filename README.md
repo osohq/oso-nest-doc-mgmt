@@ -12,15 +12,36 @@ certain actions documents. Those roles and permissions are described by rules wr
 
 ### Installation
 
-_TODO:_ 
-* how to install and run
+1. Clone this repository and install dependencies:
+```
+%> git clone https://github.com/oletizi/oso-nest-demo.git && cd oso-nest-demo && yarn install
+```
+    
+1. Start the server:
+```
+%> yarn run start
+```
+   
+1. Make a test request:
+```
+%> curl http://localhost:300/
+Hello World!
+```
 
-### (Cursory review of demo code)
-_TODO:_
-1. Briefly explain Nest concepts of Modules, Controllers, Services, and Guards w/ links to Nest docs
-1. Show relationships between base, document, users, and auth modules; explain that we'll review the oso module
-    later
-1. Browse `http://localhost:3000` to ensure app is working
+### NestJS and the Demo App
+
+[NestJS](https://docs.nestjs.com/) applications are built using [modules](https://docs.nestjs.com/modules) that (usually) 
+specify a [controller](https://docs.nestjs.com/controllers) that handles incoming requests by calling out to various
+["providers"](https://docs.nestjs.com/providers). Nest makes exensive use of [decoorators](https://docs.nestjs.com/custom-decorators)
+to specify routing and other behavior.      
+
+This demo app has five modules in addition to the main App module:
+
+  1. [AuthModule](./src/auth/)&mdash;authenticates users and guards access to resources based on authentication.
+  1. [DocumentModule](./src/document/)&mdash;provides access to user documents.
+  1. [OsoModule](./src/oso/)&mdash;configures oso and provides resources for authorizing access to documents based on 
+  users, projects, and document status.
+  1. [ProjectModule](./src/project/)&mdash;manages "projects" that have user membership and contain user documents.  
 
 ## Authentication
 
