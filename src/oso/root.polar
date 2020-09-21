@@ -39,15 +39,17 @@ role(user: User, "admin", document: Document) if
 role(user: User, "member", document: Document) if
     role(user, "admin", document);
 
+## Explicit membership role:
+role(user: User, "member", project: Project) if
+  project.isMember(user.id);
+
+## Explicit Guest roles
+
 # All users are a guest of all Documents
 role(_user: User, "guest", _document: Document);
 
 # The "Guest" actor has "guest" role
 role(_guest: Guest, "guest", _document: Document);
-
-### Roles from membership
-role(user: User, "member", project: Project) if
-  project.isMember(user.id);
 
 ## Permission groupings
 
