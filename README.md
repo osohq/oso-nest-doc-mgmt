@@ -103,16 +103,95 @@ To add more flexible access controls, we implemented a richer authorization sche
 
 * [policy.polar](src/oso/policy.polar) defines the rules for RBAC and ABAC.
 
-### Read Access Authorized for Users *and* Guests
+### Roles
 
-After nest has recompiled code and restarted itself, _unauthenticated_ access won't be blocked. Instead, the
-[`OsoInstance`](./src/oso/oso-instance.ts) and [`OsoGuard`](./src/oso/oso.guard.ts) will determine what is authorized 
-based on the rules in [root.polar](./src/oso/root.polar) and [policy.polar](./src/oso/policy.polar). 
+There are four roles defined in [root.polar](src/oso/root.polar), Owner, Admin, Member, Guest. Some roles are derived from inheritance:
 
-Access to the following URLs without valid credentials *is* allowed:
+```
+## Role inheritance. Owner > Admin > Member > Guest
+
+# User is an admin of a Project if they are the owner of that Project
+role(user: User, "admin", project: Project) if
+    role(user, "owner", project);
+
+# User is a member of a Project if they are an admin of the project (transitively, all owners are members)
+role(user: User, "member", project: Project) if
+    role(user, "admin", project);
+
+# User is an admin of a Document if they are an owner of that Document
+role(user: User, "admin", document: Document) if
+    role(user, "owner", document);
+
+# User is a member of a Document if they are an admin of that Document
+role(user: User, "member", document: Document) if
+    role(user, "admin", document);
+```
+
+The member role is explicitly defined for users who don't own a particular project or document:
+```
+### Roles from membership
+role(user: User, "member", project: Project) if
+  project.isMember(user.id);
+```
+
+The guest role is explicitly defined such that all actors are at least a guest:
+```
+## Explicit Guest roles
+
+# All users are a guest of all Documents
+role(_user: User, "guest", _document: Document);
+
+# The "Guest" actor has "guest" role
+role(_guest: Guest, "guest", _document: Document);
+```
+
+### Authorizing Read Access
+
+Access to the following URLs for all users and guests *is* allowed:
 
     curl http://localhost:3000/document
     curl http://localhost:3000/document/1
+    
+But, only users who are members of a document's project may read documents flagged as
+'memberOnly'.
+
+[`DocumentController.findOne` and `DocumentController.findAll`](src/document/document.controller.ts) are passed an authorization function via [@Authorize](src/oso/oso.guard.ts), a [custom decorator](https://docs.nestjs.com/custom-decorators) defined in [`src/oso/oso.guard.ts`](src/oso/oso.guard.ts).
+
+```
+  @Get(':id')
+  async findOne(@Param() param: any, @Authorize('read') authorize: any): Promise<string> {
+    const document = await this.documentService.findOne(Number.parseInt(param.id));
+    await authorize(document);
+    return document ? document.document : undefined;
+  }
+```  
+
+The authorization function passes the "actor", "action", and "resource" to the oso rules engine for authorization and throws an exception if not authorized. It resolves the actor (User or Guest) from the request, the action ("read") from the argument to the `@Authorize('read')` decorator, and is passed the resource (a specific Document object) by the caller.
+
+#### Authorization Rules for Read Access
+
+All guests have read access to a document if it isn't marked as `membersOnly` (from [policy.polar](src/oso/policy.polar)):
+```
+allow(user: Guest, "read", document: Document) if
+    role(user, "guest", document) and
+    not members_only(document);
+```
+
+Likewise, all users have at least a guest role for a particular document and have read
+access if the document isn't flagged as `membersOnly`:
+```
+allow(user: User, "read", document:Document) if
+    role(user, "guest", document) and
+    not members_only(document);
+```
+
+All members have read access to documents:
+```
+allow(user: User, "read", document: Document) if
+    role(user, "member", document);
+```
+
+
 
 ### Write Access is Unauthorized for Guests
 
@@ -133,41 +212,6 @@ You will receive the id of the new document that was created. A request to retri
 document:
 
     curl http://localhost:3000/document
-
-### How It Works
-
-#### Roles
-
-The following role declarations in [root.polar](./src/oso/root.polar) declare that all Users and Guests have (at least) 
-the "guest" role:
- 
-    # All users who aren't members of a document have "guest" role
-    role(_user: User, "guest", _document: Document);
-    
-    # The "Guest" actor has "guest" role
-    role(_guest: Guest, "guest", _document: Document);
-    
-#### Rules
-
-The following rule in [policy.polar](.src/oso/policy.polar) authorizes all actors who have a "guest" role to read any
-document:
-
-    allow(user: Guest, "read", document: Document) if
-        role(user, "guest", document);
-    
-    allow(user: User, "read", document:Document) if
-        role(user, "guest", document);
-
-This rule authorizes only _authenticated_ users to create documents: 
-
-    # allow only authenticated users to create
-    allow(_user: User, "create", "Document");
-    
-### Oso, OsoInstance, and OsoGuard
-_TODO:_
-* introduce OsoInstance and its relationship to Oso
-* Show the initialization of the OsoInstance
-* introduce OsoGuard & its use of the metadata context
 
 #### Decorators
 
