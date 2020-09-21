@@ -9,8 +9,8 @@ export class UsersService {
   constructor() {
     this.users = [
       new User(1, 'john', 'changeme'),
-      new User(2, 'chris', 'secret'),
-      new User(3, 'maria', 'guess'),
+      new User(2, 'chris', 'changeme'),
+      new User(3, 'maria', 'changeme'),
     ];
   }
 

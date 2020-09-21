@@ -18,10 +18,10 @@ export class DocumentController {
   }
 
   @Get(':id')
-  async findOne(@Param() param: any, @Authorize('read') authorize: any): Promise<string> {
+  async findOne(@Param() param: any, @Authorize('read') authorize: any): Promise<FindDocumentDto> | undefined {
     const document = await this.documentService.findOne(Number.parseInt(param.id));
     await authorize(document);
-    return document ? document.document : undefined;
+    return document ? new FindDocumentDto(document) : undefined;
   }
 
   @Get()
@@ -43,7 +43,6 @@ export class DocumentController {
   @Resource('Document')
   @Post('create')
   async create(@Request() request, @Body() document: CreateDocumentDto): Promise<number> {
-    // TODO: project id should be set by the request. Or, use the user's default project.
     document.ownerId = request.user.id;
     document.projectId = request.user.id;
     return this.documentService.create(document);

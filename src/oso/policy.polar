@@ -20,9 +20,19 @@ allow(user: User, "read", document:Document) if
     role(user, "guest", document) and
     not members_only(document);
 
+# allow all authenticated users to create
+allow(_user: User, "create", "Document");
+
+# allow all authenticated users to attempt to edit
+allow(_user: User, "edit", "Document");
+
+
 ### Member permissions
 
 allow(user: User, "read", document: Document) if
+    role(user, "member", document);
+
+allow(user: User, "edit", document: Document) if
     role(user, "member", document);
 
 allow(user: User, "addDocumentComment", document: Document) if
@@ -31,14 +41,6 @@ allow(user: User, "addDocumentComment", document: Document) if
 allow(user: User, "addInlineComment", document: Document) if
     role(user, "member", document);
 
-allow(user: User, "edit", document: Document) if
-    role(user, "member", document);
-
-# allow all authenticated users to create
-allow(_user: User, "create", "Document");
-
-# allow all authenticated users to attempt to edit
-allow(_user: User, "edit", "Document");
 
 ### Admin-specific permissions
 
