@@ -2,7 +2,7 @@ import { Controller, Param, Get, UseGuards, Post, Body, Request, UnauthorizedExc
 import { getLogger } from 'log4js';
 import { LocalRejectingAuthGuard, LocalResolvingAuthGuard } from '../auth/local-auth.guard';
 import { OsoInstance } from '../oso/oso-instance';
-import { CreateDocumentDto, DocumentSetDto } from './dto/document.dto';
+import { CreateDocumentDto, DocumentSetDto, FindDocumentDto } from './dto/document.dto';
 import { DocumentService } from './document.service';
 import { Action, Authorize, OsoGuard, Resource } from '../oso/oso.guard';
 import { EditActionDto } from './dto/edit-action.dto';
@@ -55,12 +55,12 @@ export class DocumentController {
   @Post('edit')
   async edit(@Authorize('edit')authorize,
              @Request() request,
-             @Body() editAction: EditActionDto): Promise<void> {
+             @Body() editAction: EditActionDto): Promise<FindDocumentDto> {
     this.logger.info('Attempt to edit document: id: ', editAction.documentId);
     const document = await this.documentService.findOne(editAction.documentId);
     this.logger.info('Checking authorization on document: ', document);
     await authorize(document);
     editAction.userId = request.user.id;
-    return this.documentService.edit(editAction);
+    return new FindDocumentDto(await this.documentService.edit(editAction));
   }
 }

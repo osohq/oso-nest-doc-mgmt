@@ -1,10 +1,9 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { getLogger, Logger } from 'log4js';
 import { Observable } from 'rxjs';
 import { Actor } from '../users/entity/actor';
-import { Guest } from '../users/entity/guest';
 import { LocalStrategy } from './local.strategy';
-import { getLogger } from 'log4js';
 
 function resolveCredentials(context: ExecutionContext) {
   const request = context.switchToHttp().getRequest();
@@ -13,22 +12,30 @@ function resolveCredentials(context: ExecutionContext) {
 
 @Injectable()
 export class LocalRejectingAuthGuard extends AuthGuard('local') {
-  constructor(private myStrategy: LocalStrategy){
+  private readonly logger: Logger;
+
+  constructor(private myStrategy: LocalStrategy) {
     super();
+    this.logger = getLogger(LocalRejectingAuthGuard.name);
   }
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const credentials = resolveCredentials(context);
+    this.logger.info('validating credentials: ', credentials);
     return this.myStrategy.validate(credentials.username, credentials.password)
       .then((actor: Actor) => {
-        return actor !== new Guest();
+        this.logger.info('found actor: ', actor);
+        return !actor.isGuest();
+      }).catch((err) => {
+        this.logger.info('No joy: ', err);
+        return false;
       });
   }
 }
 
 @Injectable()
 export class LocalResolvingAuthGuard extends AuthGuard('local') {
-  private readonly logger = getLogger(LocalResolvingAuthGuard.name);
+  private readonly logger: Logger = getLogger(LocalResolvingAuthGuard.name);
 
   constructor(private myStrategy: LocalStrategy) {
     super();
@@ -36,7 +43,7 @@ export class LocalResolvingAuthGuard extends AuthGuard('local') {
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const credentials = resolveCredentials(context);
-    this.logger.info('validating credentials...');
+    this.logger.info('validating credentials: ', credentials);
     return this.myStrategy.validate(credentials.username, credentials.password)
       .then((user) => {
         context.switchToHttp().getRequest().user = user;

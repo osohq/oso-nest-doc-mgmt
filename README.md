@@ -86,8 +86,8 @@ Using these two authentication guards, we allow all users AND guests access to t
 
 while blocking unauthenticated users from resources that create or modify:
 
-    curl -X POST http://localhost:3000/document/create -d '{"username": "john", "password": "changeme", "document": "Hello!", "projectId": 1}' -H "Content-Type: applicationjson"
-    curl -X POST http://localhost:3000/document/edit -d '{"username": "john", "password": "changeme", "document": "Updated text."}' -H "Content-Type: application/json"
+    curl -X POST http://localhost:3000/document/create -d '{"username": "john", "password": "changeme", "document": "Hello!", "projectId": 1}' -H "Content-Type: application/json" 
+    curl -X POST http://localhost:3000/document/edit -d '{"username": "john", "password": "changeme", "documentId": 1, "document": "Updated text."}' -H "Content-Type: application/json"
 
 ## Authorization
 
