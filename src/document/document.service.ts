@@ -25,9 +25,9 @@ export class DocumentService {
     projectService.addMember(demoProject.id, john.id);
 
     this.documents = [
-      new Document(this.nextSequence(), maria, demoProject, `This document belongs to ${maria.username} and is in the ${demoProject.name} project`),
-      new Document(this.nextSequence(), john, demoProject, `This document belongs to ${john.username} and is in the ${demoProject.name} project`),
-      new Document(this.nextSequence(), chris, chrisProject, `This document belongs to ${chris.username} and is in the ${chrisProject.name} project`)
+      new Document(this.nextSequence(), maria, demoProject, `This document belongs to ${maria.username} and is in the ${demoProject.name} project`, true),
+      new Document(this.nextSequence(), john, demoProject, `This document belongs to ${john.username} and is in the ${demoProject.name} project`, false),
+      new Document(this.nextSequence(), chris, chrisProject, `This document belongs to ${chris.username} and is in the ${chrisProject.name} project`, false)
     ];
     this.comments = [];
   }
@@ -44,7 +44,7 @@ export class DocumentService {
       throw new Error(`No such project: ${document.projectId}`);
     }
 
-    this.documents.push(new Document(id, owner, project, document.document));
+    this.documents.push(new Document(id, owner, project, document.document, document.membersOnly));
     return id;
   }
 
