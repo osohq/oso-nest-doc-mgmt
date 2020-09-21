@@ -25,9 +25,9 @@ export class DocumentService {
     projectService.addMember(demoProject.id, john.id);
 
     this.documents = [
-      new Document(this.nextSequence(), maria, demoProject, `This document belongs to ${maria.username} and is in the ${demoProject.name} project`, true),
-      new Document(this.nextSequence(), john, demoProject, `This document belongs to ${john.username} and is in the ${demoProject.name} project`, false),
-      new Document(this.nextSequence(), chris, chrisProject, `This document belongs to ${chris.username} and is in the ${chrisProject.name} project`, false)
+      new Document(this.nextSequence(), maria, demoProject, `This document belongs to ${maria.username} and is in the ${demoProject.name} project\n`, true),
+      new Document(this.nextSequence(), john, demoProject, `This document belongs to ${john.username} and is in the ${demoProject.name} project\n`, false),
+      new Document(this.nextSequence(), chris, chrisProject, `This document belongs to ${chris.username} and is in the ${chrisProject.name} project\n`, false)
     ];
     this.comments = [];
   }

@@ -1,3 +1,18 @@
+## Contents 
+* [Introduction](#introduction)
+    * [Installation](#installation)
+    * [NestJS and the Demo App](#nestjs-and-the-demo-app)
+* [Authentication](#authentication)
+* [Authorization](#authorization-with-oso)
+    * [Roles](#roles)
+    * [Authorizing Read Access](#authorizing-read-access)
+        * [NestJS Implementation](#nestjsjavascript-implementation-for-read-authorization)
+        * [Polar Implementation](#polar-implementation-for-read-authorization)
+    * [Authorizing Write Access](#authorizing-write-access)
+        * [NestJS Implementation](#nestjsjavascript-implementation-for-write-authorization)
+        * [Polar Implementation](#polar-implementation-for-write-authorization)
+
+
 ## Introduction
 
 This demo app provides an example implementation of oso authorization in the context of NestJS, a popular
@@ -54,29 +69,14 @@ and password supplied in the request body against a static set of users.
 The [DocumentController](./src/document/document.controller.ts) uses two variations of authentication guard via the
 `@UseGuards` decorator:
 
-  1. [`LocalResolvingAuthGuard`](src/auth/local-auth.guard.ts). This guard is responsible for resolving a (possibly) valid
+  * [LocalResolvingAuthGuard](src/auth/local-auth.guard.ts). This guard is responsible for resolving a (possibly) valid
   user from the request credentials and populating the `Request.user` field with either the valid [`User`](src/users/entity/user.ts)
-  object or a [`Guest`](src/users/entity/guest.ts) object:
+  object or a [`Guest`](src/users/entity/guest.ts) object. 
   
-    ```
-      canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-        const credentials = resolveCredentials(context);
-        this.logger.info('validating credentials...');
-        return this.myStrategy.validate(credentials.username, credentials.password)
-          .then((user) => {
-            context.switchToHttp().getRequest().user = user;
-            this.logger.info('validated user: ', user);
-            return true;
-          })
-          // Unauthenticated users are still allowed access to the resource; but request.user remains Guest
-          .catch(() => true);
-      }
-    ```
-    
-  The LocalResolvingAuthGuard is active on all methods of the [`DocumentController`](src/document/document.controller.ts)
+    The LocalResolvingAuthGuard is active on all methods of the [`DocumentController`](src/document/document.controller.ts)
   via the `@UseGuards` decorator above the `DocumentController` class declaration.
   
-  1. [LocalRejectingAuthGuard](src/auth/local-auth.guard.ts). This guard blocks access to resources that require
+  * [LocalRejectingAuthGuard](src/auth/local-auth.guard.ts). This guard blocks access to resources that require
   valid credentials. It is placed on [`DocumentController.create` and `DocumentController.edit`](src/document/document.controller.ts)
 
 Using these two authentication guards, we allow all users AND guests access to the read-only resources:
@@ -91,7 +91,7 @@ while blocking unauthenticated users from resources that create or modify:
 
 ## Authorization with oso
 
-To add more flexible access controls, we implemented a richer authorization scheme using the [oso javascript library](https://www.npmjs.com/package/oso) and rules written in oso's policy language, [Polar](https://docs.osohq.com/using/polar-syntax.html).
+To add more flexible access controls, we implemented a richer authorization scheme using the [oso javascript library](https://www.npmjs.com/package/oso) and rules written in oso's policy language, [Polar](https://docs.osohq.com/using/polar-syntax.html). The oso implementation has four main parts:
 
 * [OsoInstance](src/oso/oso-instance.ts) inherits from the Oso class in the oso javascript module. It configures the oso library to register our domain classes (`Guest`, `User`, `Document`, and `Project`) so they may be used in policy rules and loads and validates the files containing the Polar policy rules.
  
@@ -105,7 +105,9 @@ To add more flexible access controls, we implemented a richer authorization sche
 
 ### Roles
 
-There are four roles defined in [root.polar](src/oso/root.polar), Owner, Admin, Member, Guest. Some roles are derived from inheritance:
+There are four roles defined in [root.polar](src/oso/root.polar): Owner, Admin, Member, and Guest. 
+
+Some roles are derived from inheritance:
 
 ```
 ## Role inheritance. Owner > Admin > Member > Guest
@@ -127,7 +129,7 @@ role(user: User, "member", document: Document) if
     role(user, "admin", document);
 ```
 
-The member role is explicitly defined for users who don't own a particular project or document:
+The member role is explicitly defined for users who don't inherit the membership role:
 ```
 ### Roles from membership
 role(user: User, "member", project: Project) if
@@ -147,14 +149,43 @@ role(_guest: Guest, "guest", _document: Document);
 
 ### Authorizing Read Access
 
-Access to the following URLs for all users and guests *is* allowed:
+The demo app has [three users: john, chris, and maria](src/users/users.service.ts). The
+[DocumentService](src/document/document.service.ts) creates a demo Project and adds users
+`john` and `maria` as members. The user `chris` is _not_ a member of the demo Project.
+
+We want all users and guests read access to public documents, but restrict read access to 
+some documents to members only. 
+
+Using [RBAC](https://docs.osohq.com/using/examples/rbac.html), read access for users and guests is allowed:
 
     curl http://localhost:3000/document
-    curl http://localhost:3000/document/1
+    curl http://localhost:3000/document/2
     
-But, only users who are members of a document's project may read documents flagged as
-'memberOnly'.
+But, to restrict read access to non-members for *some* documents, pure RBAC is not granular enough. We need to introduce [ABAC](https://docs.osohq.com/using/examples/abac.html) to restrict access based on an attribute of each document.
 
+Access to a members-only document as a guest is forbidden:
+
+    curl http://localhost:3000/document/1
+
+Likewise, access to a members-only document as an authenticated user (chris) who isn't a 
+member of the document's project is forbidden:
+
+    curl -X GET http://localhost:3000/document/1 -d '{"username": "chris", "password": "changeme"}' -H "Content-Type: application/json"
+    
+But, access to the same document is allowed for authenticated members:
+
+    curl -X GET http://localhost:3000/document/1 -d '{"username": "john", "password": "changeme"}' -H "Content-Type: application/json"
+
+Requested as john or maria&mdash;who are both members of the document's project&mdash;the response will contain the document:
+
+    {
+        "id": 1,
+        "ownerId": 3,
+        "document": "This document belongs to maria and is in the Demo project\n",
+        "membersOnly": true
+    }
+
+### NestJS/JavaScript Implementation for Read Authorization
 [`DocumentController.findOne` and `DocumentController.findAll`](src/document/document.controller.ts) are passed an authorization function via [@Authorize](src/oso/oso.guard.ts), a [custom decorator](https://docs.nestjs.com/custom-decorators) defined in [`src/oso/oso.guard.ts`](src/oso/oso.guard.ts).
 
 ```
@@ -168,7 +199,7 @@ But, only users who are members of a document's project may read documents flagg
 
 The authorization function passes the "actor", "action", and "resource" to the oso rules engine for authorization and throws an exception if not authorized. It resolves the actor (User or Guest) from the request, the action ("read") from the argument to the `@Authorize('read')` decorator, and is passed the resource (a specific Document object) by the caller.
 
-#### Authorization Rules for Read Access
+### Polar Implementation for Read Authorization
 
 All guests have read access to a document if it isn't marked as `membersOnly` (from [policy.polar](src/oso/policy.polar)):
 ```
@@ -191,50 +222,76 @@ allow(user: User, "read", document: Document) if
     role(user, "member", document);
 ```
 
+### Authorizing Write Access
 
+Write access is more restrictive: only authenticated users may create new documents and only owners, admins, or members may edit existing documents.
 
-### Write Access is Unauthorized for Guests
-
-Access to creating a new document is denied unless the user presents valid credentials. A POST to 
-`/document/create` without valid credentials:
+Requests to create or edit a document as an unauthenticated guest is forbidden:
 
     curl -X POST http://localhost:3000/document/create
+    curl -X POST http://localhost:3000/document/edit
+
+Likewise, requests to edit a document as an authenticated user who isn't a member is forbidden:
     
-will yield a 403 response:
+    curl -X POST http://localhost:3000/document/edit -d '{"username":"chris", "password":"changeme", "documentId": 1, "document":"Some new document text"}' -H "Content-Type: application/json"
 
-    {"statusCode":403,"message":"Forbidden resource","error":"Forbidden"}
+But, requests to edit a document as an authenticated user who _is_ a member is allowed:
 
-However, access to creating a new document is allowed if the user *does* present valid credentials:
+    curl -X POST http://localhost:3000/document/edit -d '{"username":"john", "password":"changeme", "documentId": 1, "document":"Some new document text"}' -H "Content-Type: application/json"
 
-    curl -X POST -H "Content-Type: application/json" http://localhost:3000/document/create -d '{ "username": "john", "password": "changeme", "document": "I am a nice new document", "allowsDocumentComment": true, "allowsInlineComment": true }'   
+### NestJS/Javascript Implementation for Write Authorization
 
-You will receive the id of the new document that was created. A request to retrieve all documents will show the new
-document:
+#### Create
+[DocumentController.create](src/document/document.controller.ts) is protected by `OsoGuard` using an RBAC pattern:
+```
+  @UseGuards(LocalRejectingAuthGuard, OsoGuard)
+  @Action('create')
+  @Resource('Document')
+  @Post('create')
+  async create(@Request() request, @Body() document: CreateDocumentDto): Promise<number> {
+    document.ownerId = request.user.id;
+    document.projectId = request.user.id;
+    return this.documentService.create(document);
+  }
 
-    curl http://localhost:3000/document
+```
+The action (create) is declared via the `@Action('create')` decorator, [defined in oso.guard.ts](src/oso/oso.guard.ts). The resource is declared via the `@Resource('Document')` decoration, also defined in [oso.guard.ts](src/oso/oso.guard.ts). 
 
-#### Decorators
+#### Edit
+[DocumentController.edit](src/document/document.controller.ts) is similarly protected by `OsoGuard` using an RBAC pattern, but it also uses ABAC to validate (via the `@Authorize('edit)` annotation and function) user edit access to the particular document:
+```
+  @UseGuards(LocalRejectingAuthGuard, OsoGuard)
+  @Action('edit')
+  @Resource('Document')
+  @Post('edit')
+  async edit(@Authorize('edit')authorize,
+             @Request() request,
+             @Body() editAction: EditActionDto): Promise<FindDocumentDto> {
+    this.logger.info('Attempt to edit document: id: ', editAction.documentId);
+    const document = await this.documentService.findOne(editAction.documentId);
+    this.logger.info('Checking authorization on document: ', document);
+    await authorize(document);
+    editAction.userId = request.user.id;
+    return new FindDocumentDto(await this.documentService.edit(editAction));
+  }
+```
 
-The decorators on [`DocumentController.create()`](./src/document/document.controller.ts) set the `actor`, `action`, and
-`resource` used by the `allow` declaration and pass them to the oso library for evaluation:
+### Polar Implementation for Write Authorization
+All authenticated users are allowed "create" access on the resource "Document" (note, this is a generic resource literal called "Document", not a *specific* document):
 
-      @UseGuards(OsoGuard)
-      @Action('create')
-      @Resource('Document')
-      @Post('create')
-      async create(@Request() request, @Body() document: CreateDocumentDto): Promise<number> {
-        document.baseId = request.user.id;
-        return this.documentService.create(document);
-      }
+```
+allow(_user: User, "create", "Document");
+```
 
-* The `@Action('create')` decorator sets the action to 'create' in the metadata context
-* The `@Resource('Document')` decorator sets the resource to 'Document' in the metadata context
-* The `@UseGuards(OsoGuard)` decorator retrieves the `user` object from the request context and resolves the `action` 
-  and `resource` from the metadata context supplied by the @Action and @Resource decorators and passes them to
-  `Oso.isAllowed()` which evaluates the actor, action, and resource against the polar rules to determine authorization.
-  
-#### Testing
+All authenticated users are allowed to *attempt* to edit a document (note again the user of a generic resource literal called "Document":
 
-_TODO:_
-* Show how to test the rules by themselves
-* Show how to implement end-to-end testing to ensure all the wiring is set up properly
+```
+allow(_user: User, "edit", "Document");
+```
+
+Only members are allowed to edit specific documents:
+
+```
+allow(user: User, "edit", document: Document) if
+    role(user, "member", document);
+```
