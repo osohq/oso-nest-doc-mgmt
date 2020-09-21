@@ -43,7 +43,7 @@ export class LocalResolvingAuthGuard extends AuthGuard('local') {
         this.logger.info('validated user: ', user);
         return true;
       })
-      // Unauthenticated users are still allowed the resource; but request.user remains Guest
+      // Unauthenticated users are still allowed access to the resource; but request.user remains Guest
       .catch(() => true);
   }
 }

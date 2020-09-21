@@ -9,17 +9,11 @@ describe('Document', () => {
   const project: Project = mock<Project>();
   const data = 'document data';
 
-  const allPermsDoc: Document = new Document(id, owner, project, data, true, true);
-  const noPermsDoc: Document = new Document(101, owner, project, 'I allow no comments', false, false);
+  const doc: Document = new Document(id, owner, project, data);
   it('should have a valid constructor', () => {
-    expect(allPermsDoc).toBeDefined();
-    expect(allPermsDoc.id).toEqual(id);
-    expect(allPermsDoc.project).toEqual(project);
-    expect(allPermsDoc.document).toEqual(data);
-    expect(allPermsDoc.allowsDocumentComment).toEqual(true);
-    expect(allPermsDoc.allowsInlineComment).toEqual(true);
-
-    expect(noPermsDoc.allowsDocumentComment).toEqual(false);
-    expect(noPermsDoc.allowsInlineComment).toEqual(false);
+    expect(doc).toBeDefined();
+    expect(doc.id).toEqual(id);
+    expect(doc.project).toEqual(project);
+    expect(doc.document).toEqual(data);
   });
 });

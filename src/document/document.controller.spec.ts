@@ -1,4 +1,3 @@
-jest.mock('./document.service');
 import { UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -13,6 +12,7 @@ import { Document } from './entity/document';
 import { mock } from 'jest-mock-extended';
 import { User } from 'src/users/entity/user';
 import { Project } from 'src/project/project.service';
+jest.mock('./document.service');
 
 describe('Document Controller', () => {
   let service: DocumentService;
@@ -41,7 +41,7 @@ describe('Document Controller', () => {
     // prepare the return promise from DocumentService.findOne()
     const expectedOwner = mock<User>();
     const expectedProject = mock<Project>();
-    const expectedDocument: Document = new Document(100, expectedOwner, expectedProject, 'The  document', false, false);
+    const expectedDocument: Document = new Document(100, expectedOwner, expectedProject, 'The  document');
     // mock Oso's authorize function
     const mockAuthorize = jest.fn();
 
@@ -83,8 +83,8 @@ describe('Document Controller', () => {
     const expectedProject: Project = mock<Project>();
     const expectedOwner: User = mock<User>();
     const expectedDocuments: Document[] = [
-      new Document(100, expectedOwner, expectedProject, 'First document', false, false),
-      new Document(100, expectedOwner, expectedProject, 'Second document', false, false)
+      new Document(100, expectedOwner, expectedProject, 'First document'),
+      new Document(100, expectedOwner, expectedProject, 'Second document')
     ];
     const authorize = jest.fn();
     const mockFindAll = jest.spyOn(service, 'findAll');
@@ -108,8 +108,8 @@ describe('Document Controller', () => {
     const expectedUser: User = mock<User>();
     const expectedProject: Project = mock<Project>();
     const allDocuments: Document[] = [
-      new Document(1, expectedUser, expectedProject, 'some content', true, true),
-      new Document(2, expectedUser, expectedProject, 'some other content', true, true)
+      new Document(1, expectedUser, expectedProject, 'some content'),
+      new Document(2, expectedUser, expectedProject, 'some other content')
     ];
     const mockFindAll = jest.spyOn(service, 'findAll');
     const mockAuthorize = jest.fn();
@@ -137,8 +137,6 @@ describe('Document Controller', () => {
     mockCreate.mockReturnValueOnce(Promise.resolve(expectedId));
     const doc = new CreateDocumentDto();
     doc.document = 'new document';
-    doc.allowsDocumentComment = true;
-    doc.allowsInlineComment = true;
     const request = {
       user: {id: 1}
     };

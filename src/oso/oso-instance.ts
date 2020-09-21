@@ -14,10 +14,8 @@ export class OsoInstance extends Oso implements CanActivate {
 
   constructor() {
     super();
-    //this.logger.info('Creating new OsoInstance...');
-    //this.logger.info('registering User...');
-    console.log('====>Creating new OsoInstance...');
-    console.log('====> Registering User class...');
+    this.logger.info('Creating new OsoInstance...');
+    this.logger.info('registering User...');
     this.registerClass(User);
     this.logger.info('registering Guest...');
     this.registerClass(Guest);
