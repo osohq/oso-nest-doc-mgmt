@@ -33,39 +33,61 @@ certain actions documents. Those roles and permissions are described by rules wr
 [NestJS](https://docs.nestjs.com/) applications are built using [modules](https://docs.nestjs.com/modules) that (usually) 
 specify a [controller](https://docs.nestjs.com/controllers) that handles incoming requests by calling out to various
 ["providers"](https://docs.nestjs.com/providers). Nest makes exensive use of [decoorators](https://docs.nestjs.com/custom-decorators)
-to specify routing and other behavior.      
+to specify routing and other behavior. It also uses [dependency injection](https://docs.nestjs.com/fundamentals/custom-providers) 
+and autowiring to build application objects and their relationships at runtime.
 
 This demo app has five modules in addition to the main App module:
 
-  1. [AuthModule](./src/auth/)&mdash;authenticates users and guards access to resources based on authentication.
-  1. [DocumentModule](./src/document/)&mdash;provides access to user documents.
-  1. [OsoModule](./src/oso/)&mdash;configures oso and provides resources for authorizing access to documents based on 
+  1. [`AuthModule`](./src/auth/)&mdash;authenticates users and guards access to resources based on authentication.
+  1. [`DocumentModule`](./src/document/)&mdash;provides access to user documents.
+  1. [`OsoModule`](./src/oso/)&mdash;configures oso and provides resources for authorizing access to documents based on 
   users, projects, and document status.
-  1. [ProjectModule](./src/project/)&mdash;manages "projects" that have user membership and contain user documents.  
-  1. [UsersModule](./src/users/)&mdash;manages users.
+  1. [`ProjectModule`](./src/project/)&mdash;manages "projects" that have user membership and contain user documents.  
+  1. [`UsersModule`](./src/users/)&mdash;manages users.
 
 ## Authentication
 
 Nestjs has [built-in support for authentication](https://docs.nestjs.com/techniques/authentication). We've implemented
-the toy authentication mechanism (i.e.&mdash;do not use in production!) that validates the username and password 
-supplied in the request body against a static set of users.
+the toy authentication mechanism from the NestJS docs (i.e.&mdash;do not use in production!) that validates the username 
+and password supplied in the request body against a static set of users.
 
-The [DocumentController](./src/document/document.controller.ts) uses the [LocalRejectingAuthGuard](src/auth/local-auth.guard.ts)
-via the `@UseGuards(LocalRejectingAuthGuard)` decorator to protect paths that should only be accessible to authenticated users.
+The [DocumentController](./src/document/document.controller.ts) uses two variations of authentication guard via the
+`@UseGuards` decorator:
 
-If you try to get documents with invalid user credentials:
+  1. [`LocalResolvingAuthGuard`](src/auth/local-auth.guard.ts). This guard is responsible for resolving a (possibly) valid
+  user from the request credentials and populating the `Request.user` field with either the valid [`User`](src/users/entity/user.ts)
+  object or a [`Guest`](src/users/entity/guest.ts) object:
+  
+    ```
+      canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+        const credentials = resolveCredentials(context);
+        this.logger.info('validating credentials...');
+        return this.myStrategy.validate(credentials.username, credentials.password)
+          .then((user) => {
+            context.switchToHttp().getRequest().user = user;
+            this.logger.info('validated user: ', user);
+            return true;
+          })
+          // Unauthenticated users are still allowed access to the resource; but request.user remains Guest
+          .catch(() => true);
+      }
+    ```
+    
+  The LocalResolvingAuthGuard is active on all methods of the [`DocumentController`](src/document/document.controller.ts)
+  via the `@UseGuards` decorator above the `DocumentController` class declaration.
+  
+  1. [LocalRejectingAuthGuard](src/auth/local-auth.guard.ts). This guard blocks access to resources that require
+  valid credentials. It is placed on [`DocumentController.create` and `DocumentController.edit`](src/document/document.controller.ts)
+
+Using these two authentication guards, we allow all users AND guests access to the read-only resources:
 
     curl http://localhost:3000/document
     curl http://localhost:3000/document/1
 
-you will receive an 401 Unauthorized error:
+while blocking unauthenticated users from resources that create or modify:
 
-    {"statusCode":401,"message":"Unauthorized"}
-
-Requests for access to documents with valid user credentials are granted:
-    
-    curl -X GET http://localhost:3000/document/ -d '{"username": "john", "password": "changeme"}' -H "Content-Type: applicationjson"
-    curl -X GET http://localhost:3000/document/1 -d '{"username": "john", "password": "changeme"}' -H "Content-Type: application/json"
+    curl -X POST http://localhost:3000/document/create -d '{"username": "john", "password": "changeme", "document": "Hello!", "projectId": 1}' -H "Content-Type: applicationjson"
+    curl -X POST http://localhost:3000/document/edit -d '{"username": "john", "password": "changeme", "document": "Updated text."}' -H "Content-Type: application/json"
 
 ## Authorization
 

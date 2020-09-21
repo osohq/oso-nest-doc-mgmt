@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OsoInstance } from '../oso/oso-instance';
 import { ProjectModule } from '../project/project.module';
-import { ProjectService } from '../project/project.service';
 import { UsersModule } from '../users/users.module';
-import { UsersService } from '../users/users.service';
 import { DocumentModule } from './document.module';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/document.dto';
@@ -12,18 +10,14 @@ import { Comment } from './entity/comment';
 
 describe(DocumentService.name, () => {
   let service: DocumentService;
-  let projectService: ProjectService;
-  let userService: UsersService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports:[DocumentModule, UsersModule, ProjectModule],
+      imports: [DocumentModule, UsersModule, ProjectModule],
       providers: [DocumentService, OsoInstance],
     }).compile();
 
     service = module.get<DocumentService>(DocumentService);
-    projectService = module.get<ProjectService>(ProjectService);
-    userService = module.get<UsersService>(UsersService);
   });
 
   it('should be defined', () => {
@@ -59,8 +53,6 @@ describe(DocumentService.name, () => {
     createDocument.ownerId = ownerId;
     createDocument.projectId = projectId;
     createDocument.document = data;
-    createDocument.allowsDocumentComment = true;
-    createDocument.allowsInlineComment = false;
 
     const id: number = await service.create(createDocument);
     expect(id).toBeDefined();
@@ -71,8 +63,6 @@ describe(DocumentService.name, () => {
     expect(document.project).toBeDefined();
     expect(document.project.id).toEqual(projectId);
     expect(document.document).toEqual(data);
-    expect(document.allowsDocumentComment).toEqual(createDocument.allowsDocumentComment);
-    expect(document.allowsInlineComment).toEqual(createDocument.allowsInlineComment);
   });
 
   it('should be able to create and retrieve comments for a specific document', async () => {
