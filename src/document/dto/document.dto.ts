@@ -20,11 +20,15 @@ export class CreateDocumentDto {
 
 export class FindDocumentDto {
 
+  public readonly id: number;
+  public readonly ownerId: number;
   public readonly document: string;
   public readonly allowsDocumentComment: boolean;
   public readonly allowsInlineComment: boolean;
 
   constructor(doc: Document) {
+    this.id = doc.id;
+    this.ownerId = doc.owner.id;
     this.document = doc.document;
     this.allowsDocumentComment = doc.allowsDocumentComment;
     this.allowsInlineComment = doc.allowsInlineComment;

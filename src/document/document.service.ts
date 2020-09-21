@@ -17,14 +17,17 @@ export class DocumentService {
     // Create some initial data for demo purposes
     const maria = usersService.findOne('maria');
     const john = usersService.findOne('john');
-    const project = projectService.findOne(projectService.create('Maria\'s default project', maria.id));
+    const chris = usersService.findOne('chris');
+    const demoProject = projectService.findOne(projectService.create('Demo', maria.id));
+    const chrisProject = projectService.findOne(projectService.create('Chris personal', chris.id));
     // Add maria and john as demo project members; leave chris not a member of the demo project.
-    projectService.addMember(project.id, maria.id);
-    projectService.addMember(project.id, john.id);
+    projectService.addMember(demoProject.id, maria.id);
+    projectService.addMember(demoProject.id, john.id);
 
     this.documents = [
-      new Document(this.nextSequence(), maria, project, 'Hello, World!', false, false),
-      new Document(this.nextSequence(), john, project, 'Goodbye, Moon!', false, false)
+      new Document(this.nextSequence(), maria, demoProject, `This document belongs to ${maria.username} and is in the ${demoProject.name} project`, false, false),
+      new Document(this.nextSequence(), john, demoProject, `This document belongs to ${john.username} and is in the ${demoProject.name} project`, false, false),
+      new Document(this.nextSequence(), chris, chrisProject, `This document belongs to ${chris.username} and is in the ${chrisProject.name} project`, false, false)
     ];
     this.comments = [];
   }
