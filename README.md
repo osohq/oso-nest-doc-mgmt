@@ -89,28 +89,21 @@ while blocking unauthenticated users from resources that create or modify:
     curl -X POST http://localhost:3000/document/create -d '{"username": "john", "password": "changeme", "document": "Hello!", "projectId": 1}' -H "Content-Type: application/json" 
     curl -X POST http://localhost:3000/document/edit -d '{"username": "john", "password": "changeme", "documentId": 1, "document": "Updated text."}' -H "Content-Type: application/json"
 
-## Authorization
+## Authorization with oso
 
-To add more flexible access controls, we must implement a richer authorization scheme.
+To add more flexible access controls, we implemented a richer authorization scheme using the [oso javascript library](https://www.npmjs.com/package/oso) and rules written in oso's policy language, [Polar](https://docs.osohq.com/using/polar-syntax.html).
 
-We'll first update our authentication scheme to be more permissive. It will attempt to validate the supplied
-credentials and resolve the appropriate user data for use later in the request. If credentials are not supplied or they
-are invalid, the user remains a "guest", but is still allowed access to all of the paths under `/document`.
+* [OsoInstance](src/oso/oso-instance.ts) inherits from the Oso class in the oso javascript module. It configures the oso library to register our domain classes (`Guest`, `User`, `Document`, and `Project`) so they may be used in policy rules and loads and validates the files containing the Polar policy rules.
+ 
+  `OsoInstance` is decorated with `@Injectable` so it may be used as a [NestJS Provider](https://docs.nestjs.com/fundamentals/custom-providers) and implements `canActivate` so it may be used as a [NestJS Guard](https://docs.nestjs.com/guards) to ensure an `OsoInstance` is available in the request for later use.
+  
+* [OsoGuard](src/oso/oso.guard.ts) is used to ensure that only actors with permission to take a specific action on a particular resource (e.g., User may edit Document).
 
-We will allow oso and the rules defined in our polar files to determine access to actions and resources based on user
-attributes the authentication scheme placed into the request. 
+* [root.polar](src/oso/root.polar) defines the various roles that will be used in [`policy.polar`](src/oso/policy.polar) for [role-based access control (RBAC)](https://docs.osohq.com/using/examples/rbac.html) and [attribute-based access control (ABAC)](https://docs.osohq.com/using/examples/abac.html)
 
-### Switch Implementation of Authentication Guard
+* [policy.polar](src/oso/policy.polar) defines the rules for RBAC and ABAC.
 
-In [DocumentController](./src/document/document.controller.ts), replace `LocalRejectingAuthGuard` with 
-`LocalResolvingAuthGuard` in the `@UseGuards` decorator:
-
-    @UseGuards(OsoInstance)
-    @UseGuards(LocalResolvingAuthGuard)
-    @Controller('document')
-    export class DocumentController { ... }
-
-### Read Access is Now Authorized for Users *and* Guests
+### Read Access Authorized for Users *and* Guests
 
 After nest has recompiled code and restarted itself, _unauthenticated_ access won't be blocked. Instead, the
 [`OsoInstance`](./src/oso/oso-instance.ts) and [`OsoGuard`](./src/oso/oso.guard.ts) will determine what is authorized 

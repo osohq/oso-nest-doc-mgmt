@@ -1,9 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { getLogger } from 'log4js';
 import { Oso } from 'oso';
-import { Project } from '../project/project.service';
 import { Document } from '../document/entity/document';
-import { Actor } from '../users/entity/actor';
+import { Project } from '../project/project.service';
 import { Guest } from '../users/entity/guest';
 import { User } from '../users/entity/user';
 
@@ -19,8 +18,6 @@ export class OsoInstance extends Oso implements CanActivate {
     this.registerClass(User);
     this.logger.info('registering Guest...');
     this.registerClass(Guest);
-    // this.logger.info('registering Actor...');
-    // this.registerClass(Actor);
     this.logger.info('registering Document...');
     this.registerClass(Document);
     this.logger.info('registering Project...');
