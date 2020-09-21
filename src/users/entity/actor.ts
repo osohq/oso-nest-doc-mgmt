@@ -1,2 +1,3 @@
-export class Actor {
+export abstract class Actor {
+  abstract isGuest(): boolean;
 }

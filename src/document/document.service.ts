@@ -25,9 +25,9 @@ export class DocumentService {
     projectService.addMember(demoProject.id, john.id);
 
     this.documents = [
-      new Document(this.nextSequence(), maria, demoProject, `This document belongs to ${maria.username} and is in the ${demoProject.name} project`, false, false),
-      new Document(this.nextSequence(), john, demoProject, `This document belongs to ${john.username} and is in the ${demoProject.name} project`, false, false),
-      new Document(this.nextSequence(), chris, chrisProject, `This document belongs to ${chris.username} and is in the ${chrisProject.name} project`, false, false)
+      new Document(this.nextSequence(), maria, demoProject, `This document belongs to ${maria.username} and is in the ${demoProject.name} project`),
+      new Document(this.nextSequence(), john, demoProject, `This document belongs to ${john.username} and is in the ${demoProject.name} project`),
+      new Document(this.nextSequence(), chris, chrisProject, `This document belongs to ${chris.username} and is in the ${chrisProject.name} project`)
     ];
     this.comments = [];
   }
@@ -44,12 +44,7 @@ export class DocumentService {
       throw new Error(`No such project: ${document.projectId}`);
     }
 
-    this.documents.push(new Document(id,
-      owner,
-      project,
-      document.document,
-      document.allowsDocumentComment,
-      document.allowsInlineComment));
+    this.documents.push(new Document(id, owner, project, document.document));
     return id;
   }
 
@@ -61,11 +56,12 @@ export class DocumentService {
     return [...this.documents];
   }
 
-  async edit(edit: EditActionDto): Promise<void> {
+  async edit(edit: EditActionDto): Promise<Document> {
     const document: Document = await this.findOne(edit.documentId);
     if (document) {
       document.document = edit.document;
     }
+    return document;
   }
 
   async findCommentsByDocument(documentId: number): Promise<Comment[]> {
