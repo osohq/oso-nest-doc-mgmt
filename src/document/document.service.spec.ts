@@ -48,7 +48,7 @@ describe(DocumentService.name, () => {
   it('should be able to get all documents', async () => {
     const documents: Document[] = await service.findAll();
     expect(documents).toBeDefined();
-    expect(documents.length).toEqual(2);
+    expect(documents.length).toEqual(3);
   });
 
   it('should be able to create a new document', async () => {

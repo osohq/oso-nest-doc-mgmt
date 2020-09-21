@@ -49,7 +49,7 @@ export class DocumentController {
     return this.documentService.create(document);
   }
 
-  @UseGuards(OsoGuard)
+  @UseGuards(LocalRejectingAuthGuard, OsoGuard)
   @Action('edit')
   @Resource('Document')
   @Post('edit')

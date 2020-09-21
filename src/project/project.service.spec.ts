@@ -26,7 +26,7 @@ describe(ProjectService.name, () => {
     expect(project).toBeDefined();
     expect(project.id).toEqual(projectId);
     expect(project.ownerId).toEqual(ownerId);
-    expect(project.getMembers()).toContain(ownerId);
+    expect(project.isMember(ownerId)).toEqual(true);
   });
 
   it('should be able to add new members to a project', () => {

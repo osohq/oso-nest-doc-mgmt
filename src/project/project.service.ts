@@ -15,6 +15,7 @@ export class Project {
     return new Set(this.members);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   isMember(userId: number): boolean {
     return this.members.has(userId);
   }
@@ -39,7 +40,4 @@ export class ProjectService {
     this.findOne(id).addMember(userId);
   }
 
-  findMembers(projectId: number): number[] {
-    return Array.from(this.findOne(projectId).getMembers());
-  }
 }
