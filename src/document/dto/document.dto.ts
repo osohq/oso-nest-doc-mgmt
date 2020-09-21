@@ -1,5 +1,5 @@
+import { IsBoolean, IsInt, IsNotEmpty } from 'class-validator';
 import { Document } from '../entity/document';
-import { IsBoolean, IsInt, IsNotEmpty} from 'class-validator';
 
 export class CreateDocumentDto {
 
@@ -10,6 +10,9 @@ export class CreateDocumentDto {
 
   @IsNotEmpty()
   public document: string;
+
+  @IsBoolean()
+  public membersOnly: boolean
 }
 
 export class FindDocumentDto {
@@ -17,11 +20,13 @@ export class FindDocumentDto {
   public readonly id: number;
   public readonly ownerId: number;
   public readonly document: string;
+  public readonly membersOnly: boolean;
 
   constructor(doc: Document) {
     this.id = doc.id;
     this.ownerId = doc.owner.id;
     this.document = doc.document;
+    this.membersOnly = doc.membersOnly;
   }
 
 }

@@ -1,10 +1,10 @@
-#### Guest rules
+members_only(document: Document) if document.membersOnly;
+
+#### Guest permissions
 
 allow(user: Guest, "read", document: Document) if
-    role(user, "guest", document);
-
-allow(user: User, "read", document:Document) if
-    role(user, "guest", document);
+    role(user, "guest", document) and
+    not members_only(document);
 
 allow(user: Guest, "addDocumentComment", document: Document) if
     role(user, "guest", document) and
@@ -13,6 +13,12 @@ allow(user: Guest, "addDocumentComment", document: Document) if
 allow(user: Guest, "addInlineComment", document: Document) if
     role(user, "guest", document) and
     document.allowsInlineComment;
+
+#### User permissions
+
+allow(user: User, "read", document:Document) if
+    role(user, "guest", document) and
+    not members_only(document);
 
 ### Member permissions
 

@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 import { UsersInterceptor } from './users/users-interceptor';
 
 // set the global logging level for log4js
-getLogger().level = 'info';
+getLogger().level = 'warn';
 
 export async function configApp(app: INestApplication) {
   app.useGlobalPipes(new ValidationPipe()).useGlobalInterceptors(new UsersInterceptor());

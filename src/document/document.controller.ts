@@ -1,16 +1,14 @@
-import { Controller, Param, Get, UseGuards, Post, Body, Request, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { getLogger } from 'log4js';
 import { LocalRejectingAuthGuard, LocalResolvingAuthGuard } from '../auth/local-auth.guard';
 import { OsoInstance } from '../oso/oso-instance';
-import { CreateDocumentDto, DocumentSetDto, FindDocumentDto } from './dto/document.dto';
-import { DocumentService } from './document.service';
 import { Action, Authorize, OsoGuard, Resource } from '../oso/oso.guard';
+import { DocumentService } from './document.service';
+import { Document } from './entity/document';
+import { CreateDocumentDto, DocumentSetDto, FindDocumentDto } from './dto/document.dto';
 import { EditActionDto } from './dto/edit-action.dto';
 
-//@UseGuards(LocalRejectingAuthGuard)
-
-@UseGuards(OsoInstance)
-@UseGuards(LocalResolvingAuthGuard)
+@UseGuards(LocalResolvingAuthGuard, OsoInstance)
 @Controller('document')
 export class DocumentController {
 
@@ -28,14 +26,16 @@ export class DocumentController {
 
   @Get()
   async findAll(@Authorize('read') authorize: any): Promise<DocumentSetDto> {
-    return new DocumentSetDto((await this.documentService.findAll()).filter((document) => {
+    const authorized: Document[] = [];
+    for (const document of await this.documentService.findAll()) {
       try {
-        authorize(document);
-        return document;
-      } catch (e) {
-        this.logger.info('Unauthorized document access: ', e);
+        await authorize(document);
+        authorized.push(document);
+      } catch (err) {
+        this.logger.info('document is NOT authorized: ', document);
       }
-    }));
+    }
+    return new DocumentSetDto(authorized);
   }
 
   @UseGuards(LocalRejectingAuthGuard, OsoGuard)
