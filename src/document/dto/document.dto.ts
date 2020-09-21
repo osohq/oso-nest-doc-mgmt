@@ -6,7 +6,6 @@ export class CreateDocumentDto {
   @IsInt()
   public projectId: number;
 
-  @IsInt()
   public ownerId: number;
 
   @IsNotEmpty()

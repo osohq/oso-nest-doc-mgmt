@@ -38,12 +38,13 @@ export class DocumentController {
     }));
   }
 
-  @UseGuards(OsoGuard)
+  @UseGuards(LocalRejectingAuthGuard, OsoGuard)
   @Action('create')
   @Resource('Document')
   @Post('create')
   async create(@Request() request, @Body() document: CreateDocumentDto): Promise<number> {
     // TODO: project id should be set by the request. Or, use the user's default project.
+    document.ownerId = request.user.id;
     document.projectId = request.user.id;
     return this.documentService.create(document);
   }

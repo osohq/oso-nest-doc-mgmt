@@ -42,6 +42,7 @@ This demo app has five modules in addition to the main App module:
   1. [OsoModule](./src/oso/)&mdash;configures oso and provides resources for authorizing access to documents based on 
   users, projects, and document status.
   1. [ProjectModule](./src/project/)&mdash;manages "projects" that have user membership and contain user documents.  
+  1. [UsersModule](./src/users/)&mdash;manages users.
 
 ## Authentication
 
