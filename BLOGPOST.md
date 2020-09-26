@@ -145,10 +145,22 @@ We think that expressing such rules based on attributes of a particular object i
 
 ## Extensibility and separation of concerns
 
+One of the great advantages of separating the concerns of authorization from business logic is being able to modify or extend authorization policy without changing any application code. For example, let's say we want to add the notion of an "organization" where members of the organization have the same privileges as members of the document or project. In two lines of Polar, we can extend the role a user has in an organization and all of its privileges to documents:
 
+```
+# User has a role for a document if they have the same
+# role for the organization
+role(user: User, role, document: Document) if
+    role(user, role, document.project.organization());
+```
 
+Another advantage of separating authorization concerns is being able to specify authorization rules in a succinct domain-specific language and to keep the entire specification in one place.
 
+TK
+π
+# Conclusion
 
+TK
 
 
 ---
