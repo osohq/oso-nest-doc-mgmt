@@ -47,6 +47,15 @@ allow(user: User, "addInlineComment", document: Document) if
 allow(user: User, "edit", project: Project) if
     role(user, "admin", project);
 
+allow(user: User, "delete", project: Project) if
+    role(user, "admin", project)
+
+allow(user: User, "edit", document: Document) if
+    role(user, "admin", document)
+
+allow(user: User, "delete", document: Document) if
+    role(user, "admin", document);
+
 ### Owner permissions
 
 allow(user: User, _, project: Project) if
