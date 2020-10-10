@@ -29,6 +29,7 @@
     "@types/inquirer": "^7.3.1",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
+    "immutable": "^4.0.0-rc.12",
     "oso": "0.5.0",
     "passport": "^0.4.1",
     "passport-http": "^0.3.0",

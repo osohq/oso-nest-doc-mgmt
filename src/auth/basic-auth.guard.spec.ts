@@ -3,12 +3,12 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mock, mockDeep } from 'jest-mock-extended';
 import { Actor } from '../users/entity/actor';
-import { LocalResolvingAuthGuard } from './local-auth.guard';
+import { BasicAuthGuard } from './basic-auth.guard';
 import { LocalStrategy } from './local.strategy';
 
-describe(LocalResolvingAuthGuard.name, () => {
+describe(BasicAuthGuard.name, () => {
 
-  let guard: LocalResolvingAuthGuard;
+  let guard: BasicAuthGuard;
   let strategy: LocalStrategy;
   let executionContext: ExecutionContext;
   let mockRequest;
@@ -29,7 +29,7 @@ describe(LocalResolvingAuthGuard.name, () => {
 
     strategy = mock<LocalStrategy>();
     mockValidate = jest.spyOn(strategy, 'validate');
-    guard = new LocalResolvingAuthGuard(strategy);
+    guard = new BasicAuthGuard(strategy);
   });
 
   afterEach(() => {
@@ -49,11 +49,5 @@ describe(LocalResolvingAuthGuard.name, () => {
     expect(mockValidate).toHaveBeenCalledTimes(1);
     expect(mockRequest.user).toEqual(mockUser);
     expect(returnValue).toBeTruthy();
-  });
-
-  it('should return true from canActivate even if there is an exception validating the user.', async () => {
-    const err = new Error('Some Error');
-    mockValidate.mockReturnValueOnce(Promise.reject(err));
-    await expect(guard.canActivate(executionContext)).resolves.toEqual(true);
   });
 }); 

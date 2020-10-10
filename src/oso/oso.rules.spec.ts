@@ -4,7 +4,7 @@ import { Guest } from '../users/entity/guest';
 import { OsoInstance } from './oso-instance';
 import { Project } from '../project/project.service';
 
-const {getLogger} = require('log4js');
+const { getLogger } = require('log4js');
 const logger = getLogger('oso.rules.spec');
 getLogger().level = 'info';
 
@@ -38,6 +38,13 @@ describe('oso.rules.test', () => {
     johnDocTwo = new Document(2, john, project, 'I am also a document owned by john.', false);
     alexandraDocOne = new Document(3, alexandra, project, 'I am a document owned by alexandra', false);
     oso = new OsoInstance();
+    oso.loadStr(`  
+      # Test Rules
+      allow("foo", "read", "bar");
+      allow(_user: User, "read", "bar");
+      allow(user: User, "read", document: Document) if
+        user.username = "testuser" and document.id = 1;
+    `);
     await oso.initialized();
   });
 
@@ -56,18 +63,18 @@ describe('oso.rules.test', () => {
 
   it('should allow user "testuser" to read document.id = 1', async () => {
     expect(await oso.isAllowed(new User(1, 'testuser', 'changeme'),
-      'read', new Document(1, john, project, 'document text', false)))
+      actions.read, new Document(1, john, project, 'document text', false)))
       .toEqual(true);
   }
   );
   it('should allow guests to read every Document that is not marked membersOnly', async () => {
-    expect(await oso.isAllowed(new Guest(), 'read', new Document(1, john, project, 'document text', false)))
+    expect(await oso.isAllowed(new Guest(), actions.read, new Document(1, john, project, 'document text', false)))
       .toEqual(true);
   });
 
   it('should allow all users to read every Document not marked membersOnly', async () => {
-    expect(await oso.isAllowed(john, 'read', johnDocOne)).toEqual(true);
-    expect(await oso.isAllowed(alexandra, 'read', johnDocOne)).toEqual(true);
+    expect(await oso.isAllowed(john, actions.read, johnDocOne)).toEqual(true);
+    expect(await oso.isAllowed(alexandra, actions.read, johnDocOne)).toEqual(true);
   });
 
   it('should only allow users to edit the resource "Document"', async () => {
@@ -81,11 +88,11 @@ describe('oso.rules.test', () => {
     expect(await oso.isAllowed(john, actions.edit, alexandraDocOne)).toEqual(true);
   });
 
-  it('should NOT allow non-members to edit documents', async() => {
+  it('should NOT allow non-members to edit documents', async () => {
     expect(await oso.isAllowed(misha, actions.edit, alexandraDocOne)).toEqual(false);
   });
 
-  it('should NOT allow non-members and guests to read documents marked membersOnly', async ()=> {
+  it('should NOT allow non-members and guests to read documents marked membersOnly', async () => {
     const membersOnlyDocument = new Document(100, alexandra, project, 'members only document', true);
     expect(await oso.isAllowed(new Guest(), actions.read, membersOnlyDocument)).toEqual(false);
     expect(await oso.isAllowed(misha, actions.read, membersOnlyDocument)).toEqual(false);

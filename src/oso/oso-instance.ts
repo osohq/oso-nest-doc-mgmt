@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { getLogger } from 'log4js';
 import { Oso } from 'oso';
 import { Document } from '../document/entity/document';
-import { Project } from '../project/project.service';
+import { Project, ProjectService } from '../project/project.service';
 import { Guest } from '../users/entity/guest';
 import { User } from '../users/entity/user';
 
@@ -23,8 +23,10 @@ export class OsoInstance extends Oso implements CanActivate {
     this.logger.info('registering Project...');
     // TODO: Handle promises
     this.registerClass(Project);
+    this.registerClass(ProjectService);
     this.registerConstant('console', console);
-    this.init = Promise.all(['root.polar', 'policy.polar'].map(file => this.loadFile(`${__dirname}/${file}`)));
+    const files = ["roles", "permissions"];
+    this.init = Promise.all(files.map(file => this.loadFile(`${__dirname}/${file}.polar`)));
   }
 
   async initialized() {
@@ -34,7 +36,7 @@ export class OsoInstance extends Oso implements CanActivate {
   isAllowed(actor: unknown, action: unknown, resource: unknown): Promise<boolean> {
     const isAllowed = super.isAllowed(actor, action, resource);
     isAllowed.then(
-      (answer) => this.logger.info('isAllowed(): actor: ', actor, '; action: ', action, '; resource: ', resource, '; isAlloweed: ', answer)
+      (answer) => this.logger.info('isAllowed(): actor: ', actor, '; action: ', action, '; resource: ', resource, '; isAllowed: ', answer)
     );
     return isAllowed;
   }
