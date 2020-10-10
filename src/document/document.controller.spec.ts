@@ -144,7 +144,7 @@ describe('Document Controller', () => {
     const authorize = jest.fn();
     const id: number = await controller.create(authorize, request, doc);
     // DocumentService.create() should have been called with the document DTO
-    expect(mockCreate).toHaveBeenCalledWith(doc);
+    expect(mockCreate).toHaveBeenCalledWith(doc, authorize);
     expect(id).toEqual(expectedId);
   });
 });

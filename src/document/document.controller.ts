@@ -42,8 +42,7 @@ export class DocumentController {
   @Post('create')
   async create(@Authorize() authorize, @Request() request, @Body() document: CreateDocumentDto): Promise<number> {
     document.ownerId = request.user.id;
-    await authorize(document);
-    return this.documentService.create(document);
+    return this.documentService.create(document, authorize);
   }
 
   @Post('edit')

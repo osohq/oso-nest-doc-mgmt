@@ -28,8 +28,8 @@ allow(user, action, document: Document) if
 # Can create if they are the document owner and
 # they are at least a member of the project
 allow(user: User, "create", document) if
-    document.ownerId = user.id
-    and role(user, "member", ProjectService.findOne(document.projectId));
+    document.owner.id = user.id
+    and role(user, "member", document.project);
 
 # Owners can delete
 allow(user: User, "delete", document: Document) if
