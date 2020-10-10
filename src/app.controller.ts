@@ -1,10 +1,11 @@
-import { Controller, Get} from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { UseGuards } from '@nestjs/common';
-import { OsoGuard} from './oso/oso.guard';
+import { OsoGuard, Resource } from './oso/oso.guard';
 
 @Controller()
 @UseGuards(OsoGuard)
+@Resource("App")
 export class AppController {
   constructor(private readonly appService: AppService) {
   }

@@ -41,12 +41,12 @@ describe('Document Controller', () => {
     // prepare the return promise from DocumentService.findOne()
     const expectedOwner = mock<User>();
     const expectedProject = mock<Project>();
-    const expectedDocument: Document = new Document(100, expectedOwner, expectedProject, 'The  document');
+    const expectedDocument: Document = new Document(100, expectedOwner, expectedProject, 'The  document', true);
     // mock Oso's authorize function
     const mockAuthorize = jest.fn();
 
     // mock param to have the document id
-    const param = {id: expectedDocument.id.toString()};
+    const id = expectedDocument.id.toString();
 
     // mock service.findOne()
     const mockFindOne = jest.spyOn(service, 'findOne');
@@ -54,14 +54,15 @@ describe('Document Controller', () => {
     mockFindOne.mockReturnValueOnce(Promise.resolve(expectedDocument));
 
     // call the function under test
-    const actualDocument: string = await controller.findOne(param, mockAuthorize);
+    const actualDocument = await controller.findOne(id, mockAuthorize);
+    const documentContent = actualDocument.document;
 
     // expect service.findOne to have been called
     expect(mockFindOne).toHaveBeenCalledTimes(1);
-    expect(mockFindOne).toHaveBeenCalledWith(Number.parseInt(param.id));
+    expect(mockFindOne).toHaveBeenCalledWith(Number.parseInt(id));
     // ensure authorize was called
     expect(mockAuthorize).toHaveBeenCalledTimes(1);
-    expect(actualDocument).toEqual(expectedDocument.document);
+    expect(documentContent).toEqual(expectedDocument.document);
   });
 
   it('should return undefined when findOne does not find a document', async () => {
@@ -70,10 +71,10 @@ describe('Document Controller', () => {
     mockFindOne.mockReturnValueOnce(Promise.resolve(empty));
 
     const authorize = jest.fn();
-    const param = {id: '100'};
-    const expectedReturnValue = await controller.findOne(param, authorize);
+    const id = '100';
+    const expectedReturnValue = await controller.findOne(id, authorize);
     expect(mockFindOne).toHaveBeenCalledTimes(1);
-    expect(mockFindOne).toHaveBeenCalledWith(Number.parseInt(param.id));
+    expect(mockFindOne).toHaveBeenCalledWith(Number.parseInt(id));
     expect(authorize).toHaveBeenCalledTimes(1);
     expect(authorize).toHaveBeenCalledWith(empty);
     expect(expectedReturnValue).toEqual(empty);
@@ -83,8 +84,8 @@ describe('Document Controller', () => {
     const expectedProject: Project = mock<Project>();
     const expectedOwner: User = mock<User>();
     const expectedDocuments: Document[] = [
-      new Document(100, expectedOwner, expectedProject, 'First document'),
-      new Document(100, expectedOwner, expectedProject, 'Second document')
+      new Document(100, expectedOwner, expectedProject, 'First document', true),
+      new Document(100, expectedOwner, expectedProject, 'Second document', true)
     ];
     const authorize = jest.fn();
     const mockFindAll = jest.spyOn(service, 'findAll');
@@ -108,8 +109,8 @@ describe('Document Controller', () => {
     const expectedUser: User = mock<User>();
     const expectedProject: Project = mock<Project>();
     const allDocuments: Document[] = [
-      new Document(1, expectedUser, expectedProject, 'some content'),
-      new Document(2, expectedUser, expectedProject, 'some other content')
+      new Document(1, expectedUser, expectedProject, 'some content', true),
+      new Document(2, expectedUser, expectedProject, 'some other content', true)
     ];
     const mockFindAll = jest.spyOn(service, 'findAll');
     const mockAuthorize = jest.fn();
@@ -138,13 +139,12 @@ describe('Document Controller', () => {
     const doc = new CreateDocumentDto();
     doc.document = 'new document';
     const request = {
-      user: {id: 1}
+      user: { id: 1 }
     };
-    const id: number = await controller.create(request, doc);
+    const authorize = jest.fn();
+    const id: number = await controller.create(authorize, request, doc);
     // DocumentService.create() should have been called with the document DTO
     expect(mockCreate).toHaveBeenCalledWith(doc);
-    // it should have populated the baseId of the document with user.id
-    expect(doc.projectId).toEqual(request.user.id);
     expect(id).toEqual(expectedId);
   });
 });
