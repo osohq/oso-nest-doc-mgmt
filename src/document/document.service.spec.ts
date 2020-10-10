@@ -53,8 +53,9 @@ describe(DocumentService.name, () => {
     createDocument.ownerId = ownerId;
     createDocument.projectId = projectId;
     createDocument.document = data;
+    const authorize = jest.fn();
 
-    const id: number = await service.create(createDocument);
+    const id: number = await service.create(createDocument, authorize);
     expect(id).toBeDefined();
 
     const document: Document = await service.findOne(id);

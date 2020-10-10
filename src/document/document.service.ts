@@ -6,6 +6,7 @@ import { CreateDocumentDto } from './dto/document.dto';
 import { Document } from './entity/document';
 import { Comment } from './entity/comment';
 import { EditActionDto } from './dto/edit-action.dto';
+import { Authorize } from 'src/oso/oso.guard';
 
 @Injectable()
 export class DocumentService {
@@ -32,7 +33,7 @@ export class DocumentService {
     this.comments = [];
   }
 
-  async create(document: CreateDocumentDto): Promise<number> {
+  async create(document: CreateDocumentDto, authorize): Promise<number> {
     const id = ++this.sequence;
     const owner: User = this.usersService.findById(document.ownerId);
     if (owner === undefined) {
@@ -43,8 +44,9 @@ export class DocumentService {
     if (project === undefined) {
       throw new Error(`No such project: ${document.projectId}`);
     }
-
-    this.documents.push(new Document(id, owner, project, document.document, document.membersOnly));
+    const newDocument = new Document(id, owner, project, document.document, document.membersOnly)
+    await authorize(newDocument);
+    this.documents.push(newDocument);
     return id;
   }
 
