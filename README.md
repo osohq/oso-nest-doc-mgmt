@@ -1,17 +1,19 @@
-## Contents 
+# oso Nest.js Demo
+
+## Contents
+
 * [Introduction](#introduction)
-    * [Installation](#installation)
-    * [NestJS and the Demo App](#nestjs-and-the-demo-app)
+  * [Installation](#installation)
+  * [NestJS and the Demo App](#nestjs-and-the-demo-app)
 * [Authentication](#authentication)
 * [Authorization](#authorization-with-oso)
-    * [Roles](#roles)
-    * [Authorizing Read Access](#authorizing-read-access)
-        * [NestJS Implementation](#nestjsjavascript-implementation-for-read-authorization)
-        * [Polar Implementation](#polar-implementation-for-read-authorization)
-    * [Authorizing Write Access](#authorizing-write-access)
-        * [NestJS Implementation](#nestjsjavascript-implementation-for-write-authorization)
-        * [Polar Implementation](#polar-implementation-for-write-authorization)
-
+  * [Roles](#roles)
+  * [Authorizing Read Access](#authorizing-read-access)
+    * [NestJS Implementation](#nestjsjavascript-implementation-for-read-authorization)
+    * [Polar Implementation](#polar-implementation-for-read-authorization)
+  * [Authorizing Write Access](#authorizing-write-access)
+    * [NestJS Implementation](#nestjsjavascript-implementation-for-write-authorization)
+    * [Polar Implementation](#polar-implementation-for-write-authorization)
 
 ## Introduction
 
