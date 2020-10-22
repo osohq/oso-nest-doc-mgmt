@@ -28,17 +28,20 @@ certain actions documents. Those roles and permissions are described by rules wr
 ### Installation
 
 1. Clone this repository and install dependencies:
-    ```
+
+    ```console
     %> git clone https://github.com/osohq/oso-nest-demo.git && cd oso-nest-demo && yarn install
     ```
-    
+
 1. Start the server:
+
+    ```console
+    %> yarn start
     ```
-    %> yarn run start
-    ```
-   
+
 1. Make a test request:
-    ```
+
+    ```console
     %> curl http://localhost:3000/
     Hello World!
     ```
