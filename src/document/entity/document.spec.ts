@@ -8,8 +8,9 @@ describe('Document', () => {
   const owner: User = mock<User>();
   const project: Project = mock<Project>();
   const data = 'document data';
+  const membersOnly = true;
 
-  const doc: Document = new Document(id, owner, project, data);
+  const doc: Document = new Document(id, owner, project, data, membersOnly);
   it('should have a valid constructor', () => {
     expect(doc).toBeDefined();
     expect(doc.id).toEqual(id);
