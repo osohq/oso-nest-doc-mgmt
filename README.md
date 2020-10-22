@@ -50,7 +50,7 @@ certain actions documents. Those roles and permissions are described by rules wr
 
 [NestJS](https://docs.nestjs.com/) applications are built using [modules](https://docs.nestjs.com/modules) that (usually) 
 specify a [controller](https://docs.nestjs.com/controllers) that handles incoming requests by calling out to various
-["providers"](https://docs.nestjs.com/providers). Nest makes exensive use of [decoorators](https://docs.nestjs.com/custom-decorators)
+["providers"](https://docs.nestjs.com/providers). Nest makes exensive use of [decorators](https://docs.nestjs.com/custom-decorators)
 to specify routing and other behavior. It also uses [dependency injection](https://docs.nestjs.com/fundamentals/custom-providers) 
 and autowiring to build application objects and their relationships at runtime.
 
