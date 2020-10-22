@@ -16,14 +16,14 @@
 ## Introduction
 
 This demo app provides an example implementation of oso authorization in the context of NestJS, a popular
-Node.js progressive framework
+Node.js progressive framework.
 
 The tutorial below examines possible use-cases, including [RBAC](https://docs.osohq.com/using/examples/rbac.html) and 
 [ABAC](https://docs.osohq.com/using/examples/abac.html) with concrete implementations.
 
 The problem domain is a document management system that requires various kinds of access permissions in order to perform
 certain actions documents. Those roles and permissions are described by rules written in Oso's policy language, 
-[Polar](https://docs.osohq.com/using/polar-syntax.html) 
+[Polar](https://docs.osohq.com/using/polar-syntax.html).
 
 ### Installation
 
@@ -80,7 +80,7 @@ The [DocumentController](./src/document/document.controller.ts) uses two variati
   via the `@UseGuards` decorator above the `DocumentController` class declaration.
   
   * [LocalRejectingAuthGuard](src/auth/local-auth.guard.ts). This guard blocks access to resources that require
-  valid credentials. It is placed on [`DocumentController.create` and `DocumentController.edit`](src/document/document.controller.ts)
+  valid credentials. It is placed on [`DocumentController.create` and `DocumentController.edit`](src/document/document.controller.ts).
 
 Using these two authentication guards, we allow all users AND guests access to the read-only resources:
 
@@ -102,7 +102,7 @@ To add more flexible access controls, we implemented a richer authorization sche
   
 * [OsoGuard](src/oso/oso.guard.ts) is used to ensure that only actors with permission to take a specific action on a particular resource (e.g., User may edit Document).
 
-* [root.polar](src/oso/root.polar) defines the various roles that will be used in [`policy.polar`](src/oso/policy.polar) for [role-based access control (RBAC)](https://docs.osohq.com/using/examples/rbac.html) and [attribute-based access control (ABAC)](https://docs.osohq.com/using/examples/abac.html)
+* [root.polar](src/oso/root.polar) defines the various roles that will be used in [`policy.polar`](src/oso/policy.polar) for [role-based access control (RBAC)](https://docs.osohq.com/using/examples/rbac.html) and [attribute-based access control (ABAC)](https://docs.osohq.com/using/examples/abac.html).
 
 * [policy.polar](src/oso/policy.polar) defines the rules for RBAC and ABAC.
 
