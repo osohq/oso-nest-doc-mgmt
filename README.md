@@ -67,32 +67,30 @@ This demo app has five modules in addition to the main App module:
 
 ## Authentication
 
-Nestjs has [built-in support for authentication](https://docs.nestjs.com/techniques/authentication). We've implemented
-the toy authentication mechanism from the NestJS docs (i.e.&mdash;do not use in production!) that validates the username
-and password supplied in the request body against a static set of users.
+Nestjs has [built-in support for
+authentication](https://docs.nestjs.com/techniques/authentication). We've
+implemented a basic authentication mechanism similar to the one in the NestJS
+docs (i.e.&mdash;do not use in production!) that validates the username and
+password supplied in the request headers against a static set of users.
 
-The [DocumentController](./src/document/document.controller.ts) uses two variations of authentication guard via the
-`@UseGuards` decorator:
+The [`DocumentController`](./src/document/document.controller.ts) uses the
+[`BasicAuthGuard`](./src/auth/basic-auth.guard.ts) via the `@UseGuards`
+decorator. This authentication guard is active on all methods of the
+[`DocumentController`](./src/document/document.controller.ts) and is
+responsible for resolving a (possibly) valid user from the request headers and
+populating the `Request.user` field with either the valid
+[`User`](./src/users/entity/user.ts) object or a
+[`Guest`](./src/users/entity/guest.ts) object.
 
-  * [LocalResolvingAuthGuard](src/auth/local-auth.guard.ts). This guard is responsible for resolving a (possibly) valid
-  user from the request credentials and populating the `Request.user` field with either the valid [`User`](src/users/entity/user.ts)
-  object or a [`Guest`](src/users/entity/guest.ts) object.
+With this authentication guard in place, we allow all users access but deny
+access to guests:
 
-    The LocalResolvingAuthGuard is active on all methods of the [`DocumentController`](src/document/document.controller.ts)
-  via the `@UseGuards` decorator above the `DocumentController` class declaration.
-
-  * [LocalRejectingAuthGuard](src/auth/local-auth.guard.ts). This guard blocks access to resources that require
-  valid credentials. It is placed on [`DocumentController.create` and `DocumentController.edit`](src/document/document.controller.ts).
-
-Using these two authentication guards, we allow all users AND guests access to the read-only resources:
-
-    curl http://localhost:3000/document
-    curl http://localhost:3000/document/1
-
-while blocking unauthenticated users from resources that create or modify:
-
-    curl -X POST http://localhost:3000/document/create -d '{"username": "john", "password": "changeme", "document": "Hello!", "projectId": 1}' -H "Content-Type: application/json"
-    curl -X POST http://localhost:3000/document/edit -d '{"username": "john", "password": "changeme", "documentId": 1, "document": "Updated text."}' -H "Content-Type: application/json"
+```console
+%> curl http://localhost:3000/document/1
+{"statusCode":403,"message":"Forbidden resource","error":"Forbidden"}
+%> curl --user john:changeme http://localhost:3000/document/1
+{"id":1,"ownerId":3,"document":"This document...","membersOnly":true}
+```
 
 ## Authorization with oso
 
