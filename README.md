@@ -29,7 +29,7 @@ certain actions documents. Those roles and permissions are described by rules wr
 
 1. Clone this repository and install dependencies:
     ```
-    %> git clone https://github.com/oletizi/oso-nest-demo.git && cd oso-nest-demo && yarn install
+    %> git clone https://github.com/osohq/oso-nest-demo.git && cd oso-nest-demo && yarn install
     ```
     
 1. Start the server:
