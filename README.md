@@ -27,7 +27,7 @@ implementations.
 
 The problem domain is a document management system that requires various kinds
 of access permissions in order to perform certain actions documents. Those
-roles and permissions are described by rules written in Oso's policy language,
+roles and permissions are described by rules written in oso's policy language,
 [Polar](https://docs.osohq.com/using/polar-syntax.html).
 
 ### Installation
