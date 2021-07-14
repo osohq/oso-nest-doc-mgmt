@@ -128,16 +128,16 @@ has four main parts:
   permission to take a specific action on a particular resource (e.g., User may
   edit Document).
 
-* [root.polar](src/oso/root.polar) defines the various roles that will be used
-  in [`policy.polar`](src/oso/policy.polar) for [role-based access control
+* [roles.polar](src/oso/roles.polar) defines the various roles that will be used
+  in [`permissions.polar`](src/oso/permissions.polar) for [role-based access control
   (RBAC)](https://docs.osohq.com/using/examples/rbac.html) and [attribute-based
   access control (ABAC)](https://docs.osohq.com/using/examples/abac.html).
 
-* [policy.polar](src/oso/policy.polar) defines the rules for RBAC and ABAC.
+* [permissions.polar](src/oso/permissions.polar) defines the rules for RBAC and ABAC.
 
 ### Roles
 
-There are four roles defined in [root.polar](src/oso/root.polar): Owner, Admin,
+There are four roles defined in [roles.polar](src/oso/roles.polar): Owner, Admin,
 Member, and Guest.
 
 Some roles are derived from inheritance:
@@ -265,7 +265,7 @@ resource (a specific Document object) by the caller.
 ### Polar Implementation for Read Authorization
 
 All guests have read access to a document if it isn't marked as `membersOnly`
-(from [policy.polar](src/oso/policy.polar)):
+(from [permissions.polar](src/oso/permissions.polar)):
 
 ```py
 allow(user: Guest, "read", document: Document) if
