@@ -1,4 +1,4 @@
-# oso Nest.js Demo
+# Oso Nest.js Demo
 
 ## Contents
 
@@ -17,7 +17,7 @@
 
 ## Introduction
 
-This demo app provides an example implementation of oso authorization in the
+This demo app provides an example implementation of Oso authorization in the
 context of NestJS, a popular Node.js progressive framework.
 
 The tutorial below examines possible use-cases, including
@@ -27,7 +27,7 @@ implementations.
 
 The problem domain is a document management system that requires various kinds
 of access permissions in order to perform certain actions documents. Those
-roles and permissions are described by rules written in oso's policy language,
+roles and permissions are described by rules written in Oso's policy language,
 [Polar](https://docs.osohq.com/using/polar-syntax.html).
 
 ### Installation
@@ -70,7 +70,7 @@ This demo app has five modules in addition to the main App module:
      resources based on authentication.
   1. [`DocumentModule`](./src/document/)&mdash;provides access to user
      documents.
-  1. [`OsoModule`](./src/oso/)&mdash;configures oso and provides resources for
+  1. [`OsoModule`](./src/oso/)&mdash;configures Oso and provides resources for
      authorizing access to documents based on users, projects, and document
      status.
   1. [`ProjectModule`](./src/project/)&mdash;manages "projects" that have user
@@ -104,16 +104,16 @@ $ curl --user john:changeme http://localhost:3000/document/1
 {"id":1,"ownerId":3,"document":"This document...","membersOnly":true}
 ```
 
-## Authorization with oso
+## Authorization with Oso
 
 To add more flexible access controls, we implemented a richer authorization
-scheme using the [oso javascript library](https://www.npmjs.com/package/oso)
-and rules written in oso's policy language,
-[Polar](https://docs.osohq.com/using/polar-syntax.html). The oso implementation
+scheme using the [Oso JavaScript library](https://www.npmjs.com/package/oso)
+and rules written in Oso's policy language,
+[Polar](https://docs.osohq.com/using/polar-syntax.html). The Oso implementation
 has four main parts:
 
-* [OsoInstance](src/oso/oso-instance.ts) inherits from the Oso class in the oso
-  javascript module. It configures the oso library to register our domain
+* [OsoInstance](src/oso/oso-instance.ts) inherits from the Oso class in the Oso
+  JavaScript module. It configures the Oso library to register our domain
   classes (`Guest`, `User`, `Document`, and `Project`) so they may be used in
   policy rules and loads and validates the files containing the Polar policy
   rules.
@@ -257,7 +257,7 @@ decorator](https://docs.nestjs.com/custom-decorators) defined in
 ```
 
 The authorization function passes the "actor", "action", and "resource" to the
-oso rules engine for authorization and throws an exception if not authorized.
+Oso rules engine for authorization and throws an exception if not authorized.
 It resolves the actor (User or Guest) from the request, the action ("read")
 from the argument to the `@Authorize('read')` decorator, and is passed the
 resource (a specific Document object) by the caller.
@@ -315,7 +315,7 @@ allowed:
 $ curl --user john:changeme -X POST http://localhost:3000/document/edit -d '{"documentId": 1, "document": "Some new document text"}'
 ```
 
-### NestJS/Javascript Implementation for Write Authorization
+### NestJS/JavaScript Implementation for Write Authorization
 
 #### Create
 
