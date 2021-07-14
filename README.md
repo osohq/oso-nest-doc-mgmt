@@ -137,6 +137,8 @@ has four main parts:
 
 ### Roles
 
+<!-- @TODO(gj): out of date -- no more admin role -->
+
 There are four roles defined in [roles.polar](src/oso/roles.polar): Owner, Admin,
 Member, and Guest.
 
