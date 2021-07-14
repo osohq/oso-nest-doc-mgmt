@@ -35,7 +35,7 @@ roles and permissions are described by rules written in Oso's policy language,
 1. Clone this repository and install dependencies:
 
   ```console
-  $ git clone https://github.com/osohq/oso-nest-demo.git && cd oso-nest-demo && yarn
+  $ git clone https://github.com/osohq/oso-nest-doc-mgmt.git && cd oso-nest-doc-mgmt && yarn
   ```
 
 1. Start the server:
